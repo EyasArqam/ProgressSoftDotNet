@@ -5,32 +5,15 @@ namespace BusinessCardAPI.Data
 {
     public class BusinessCardDBContext : DbContext
     {
-    
+
+        public BusinessCardDBContext(DbContextOptions<BusinessCardDBContext> options) : base(options)
+        {
+        }
+
         #region Entities
         public DbSet<BusinessCard> BusinessCards { get; set; }
 
         #endregion
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            base.OnConfiguring(optionsBuilder);
-
-            var config = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .Build();
-
-            var connectionString = config.GetConnectionString("DefaultConnection");
-
-
-            optionsBuilder.UseSqlServer(connectionString, serverOptions =>
-            {
-                serverOptions.EnableRetryOnFailure(
-                    maxRetryCount: 3,
-                    maxRetryDelay: TimeSpan.FromSeconds(3),
-                    errorNumbersToAdd: null);
-            });
-        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
