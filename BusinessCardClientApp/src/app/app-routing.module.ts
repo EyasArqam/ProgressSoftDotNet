@@ -9,7 +9,11 @@ const routes: Routes = [
     component: LayoutComponent,
     children: [
       { path: '', redirectTo: 'home', pathMatch: 'full' }, 
-      { path: 'home', component: HomeComponent }
+      { path: 'home', component: HomeComponent },
+      { 
+        path: 'business-cards', 
+        loadChildren: () => import('./components/pages/business-cards.module').then(m => m.BusinessCardsModule) 
+      }
     ]
   },
   { path: '**', redirectTo: '/home' }

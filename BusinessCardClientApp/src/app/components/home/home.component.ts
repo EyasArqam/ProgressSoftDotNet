@@ -10,6 +10,6 @@ export class HomeComponent {
   router = inject(Router);
 
   createBusinessCard() {
-    this.router.navigate(['/create-business-card']);
+    this.router.navigate(['/business-cards/add']);
   }
 }

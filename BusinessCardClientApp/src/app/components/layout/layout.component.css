@@ -18,8 +18,13 @@ mat-sidenav {
   width: 16vw;
 }
 
+.example-toolbar button {
+  cursor: pointer;
+}
+
 h1.example-app-name {
   margin-left: 8px;
+  cursor: pointer;
 }
 
 .example-sidenav-container {

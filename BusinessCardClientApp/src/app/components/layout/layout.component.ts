@@ -1,6 +1,7 @@
-import { ChangeDetectorRef, Component, Inject } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, Inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MediaMatcher } from '@angular/cdk/layout';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-layout',
@@ -8,6 +9,8 @@ import { MediaMatcher } from '@angular/cdk/layout';
   styleUrl: './layout.component.css',
 })
 export class LayoutComponent {
+
+  router = inject(Router);
 
   protected mobileQuery: MediaQueryList;
   protected _mobileQueryListener: () => void;
@@ -21,6 +24,11 @@ export class LayoutComponent {
     this.mobileQuery = this.media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => this.changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
+  }
+
+
+  navigateToHome() {
+    this.router.navigate(['/home']);
   }
 
 }
