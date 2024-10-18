@@ -1,29 +1,31 @@
 .example-container {
-    display: flex;
-    flex-direction: column;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-  }
-  
-  .example-is-mobile .example-toolbar {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
 
-    z-index: 2;
-  }
-  
-  h1.example-app-name {
-    margin-left: 8px;
-  }
-  
-  .example-sidenav-container {
+.example-is-mobile .example-toolbar {
+  height: 7vh;
+  z-index: 2;
+  margin: 16px 0px;
+}
 
-    flex: 1;
-  }
-  
-  .example-is-mobile .example-sidenav-container {
+mat-sidenav{
+  width: 16vw;
+}
 
-    flex: 1 0 auto;
-  }
-  
+h1.example-app-name {
+  margin-left: 8px;
+}
+
+.example-sidenav-container {
+  flex: 1;
+}
+
+.example-is-mobile .example-sidenav-container {
+  flex: 1 0 auto;
+}
