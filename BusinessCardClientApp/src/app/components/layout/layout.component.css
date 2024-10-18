@@ -14,7 +14,7 @@
   margin: 16px 0px;
 }
 
-mat-sidenav{
+mat-sidenav {
   width: 16vw;
 }
 
@@ -28,4 +28,23 @@ h1.example-app-name {
 
 .example-is-mobile .example-sidenav-container {
   flex: 1 0 auto;
+}
+
+
+.mat-icon {
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+.mat-nav-list a {
+  display: flex;
+  align-items: center;
+}
+
+.center-icon {
+  text-align: center !important;
+}
+
+.mat-icon {
+  margin-right: 0px !important;
 }
