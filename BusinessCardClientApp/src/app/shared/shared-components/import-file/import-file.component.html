@@ -1,0 +1,10 @@
+
+<form>
+    <file-upload [(ngModel)]="uploadedFiles" [disabled]="false" multiple="false" accept=".xml,.csv" name="file">
+    </file-upload>
+
+    <button mat-fab extended type="button" color="primary" (click)="importData()">
+        <!-- <mat-icon>&#xe0ac;</mat-icon> -->
+        Import Data
+    </button>
+</form>

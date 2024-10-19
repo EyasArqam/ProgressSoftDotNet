@@ -5,6 +5,8 @@ import { AddBusinessCardComponent } from './add-business-card/add-business-card.
 import { ListBusinessCardsComponent } from './list-business-cards/list-business-cards.component';
 import { SharedModule } from '../../shared/shared-module/shared.module';
 import { DividerWithTextComponent } from "../../shared/shared-components/divider-with-text/divider-with-text.component";
+import { FileUploadModule } from '@iplab/ngx-file-upload';
+import { ImportFileComponent } from "../../shared/shared-components/import-file/import-file.component";
 
 
 
@@ -17,7 +19,12 @@ import { DividerWithTextComponent } from "../../shared/shared-components/divider
     CommonModule,
     BusinessCardsRoutingModule,
     SharedModule,
-    DividerWithTextComponent
+    DividerWithTextComponent,
+    FileUploadModule,
+    ImportFileComponent
+],
+exports:[
+  FileUploadModule
 ]
 })
 export class BusinessCardsModule { }

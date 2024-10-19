@@ -13,6 +13,7 @@ export class AddBusinessCardComponent implements OnInit {
   businessCardForm: FormGroup = new FormGroup({});
   genders = Object.values(Gender);
   photoBase64: string | null = null;
+  public selectedFiles: File[] = [];
 
   ngOnInit(): void {
     this.businessCardForm = new FormGroup({
@@ -27,9 +28,12 @@ export class AddBusinessCardComponent implements OnInit {
 
   }
 
-  selectedImage: string | ArrayBuffer | null = '';
 
-  
+  onFilesSelected(files: File[]): void {
+    this.selectedFiles = files;
+    console.log('Selected files:', this.selectedFiles);
+  }
+
   onPhotoChange(event: any) {
     const file = event.target.files[0];
     if (file) {

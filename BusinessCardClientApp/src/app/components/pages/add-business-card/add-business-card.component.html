@@ -7,13 +7,14 @@
                 <mat-expansion-panel-header>
                     <mat-panel-title> Import XML | CSV | QR Code </mat-panel-title>
                 </mat-expansion-panel-header>
-                <p>This is the primary content of the panel.</p>
+
+                <import-file (filesSelected)="onFilesSelected($event)"></import-file>
+
             </mat-expansion-panel>
 
         </mat-accordion>
 
         <divider-with-text text="OR"></divider-with-text>
-
 
         <form [formGroup]="businessCardForm" class="example-form" (ngSubmit)="onSubmit()">
             <div class="form-container">
@@ -79,7 +80,7 @@
 
 
                 <button mat-raised-button color="primary" [disabled]="businessCardForm.invalid">Submit</button>
-                
+
             </div>
 
         </form>
