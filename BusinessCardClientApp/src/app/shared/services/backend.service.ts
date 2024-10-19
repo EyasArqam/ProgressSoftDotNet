@@ -20,10 +20,10 @@ import { catchError, map } from 'rxjs/operators';
 export class BackendService {
 
   get baseUrl(): string {
-      return 'api/';
+    return 'https://localhost:7281/api/';
   }
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
 
   getAll(
@@ -187,76 +187,30 @@ export class BackendService {
       .toPromise();
   }
 
+
   post<T = {}>(url: string, obj: { [x: string]: any; }, files?: any[]): Promise<PostResponse<T>> {
-    let HasUploadFile = false;
+    return this.http
+      .post<any>(this.baseUrl + url, obj)
+      .pipe(
+        map((res) => new PostResponse<T>({ ok: true, body: res })),
+        catchError(this.handleError<any>(url, []))
+      )
+      .toPromise();
 
-    if (!(obj instanceof Array)) {
-      Object.keys(obj).forEach((key) => {
-        if (
-          obj[key] &&
-          obj[key].Id &&
-          typeof obj[key] === 'object' &&
-          !(obj[key] instanceof Date) &&
-          !(obj[key] instanceof Array) &&
-          !(obj[key] instanceof File)
-        ) {
-          obj[key] = obj[key].Id;
-        }
-        if (key === 'Id' && !obj[key]) {
-          obj[key] = undefined;
-        } else if (obj[key] instanceof Date) {
-          const Offset = (new Date(obj[key]).getTimezoneOffset() * -1) / 60;
-          const date: Date = new Date(obj[key]);
-          date.setHours(date.getHours() + Number(Offset));
-          obj[key] = date;
-        }
-        if (obj[key] instanceof File) {
-          HasUploadFile = true;
-        }
-        if (files) {
-          if (obj[key] && obj[key][0] instanceof File) {
-            HasUploadFile = true;
-          }
-        }
-      });
-    }
+  }
 
-    if (HasUploadFile || files) {
-      const formdata = new FormData();
-      if (obj instanceof Array) {
-        formdata.append('data', JSON.stringify(obj));
-      } else {
-        Object.keys(obj).forEach((key) => {
-          if (!(obj[key] instanceof Array)) {
-            formdata.append(key, obj[key]);
-          } else {
-            formdata.append(key, JSON.stringify(obj[key]));
-          }
-        });
-      }
+  postFiles<T = {}>(url: string, files: any): Promise<PostResponse<T>> {
+    const formData = new FormData();
 
-      if (files) {
-        files.forEach((file, index) => {
-          formdata.append('file_' + index, file);
-        });
-      }
+    formData.append('file', files[0], files[0].name);
 
-      return this.http
-        .post<any>(this.baseUrl + url, formdata)
-        .pipe(
-          map((res) => new PostResponse({ ok: true, body: res })),
-          catchError(this.handleError<any>(url, []))
-        )
-        .toPromise();
-    } else {
-      return this.http
-        .post<any>(this.baseUrl + url, obj)
-        .pipe(
-          map((res) => new PostResponse<T>({ ok: true, body: res })),
-          catchError(this.handleError<any>(url, []))
-        )
-        .toPromise();
-    }
+    return this.http
+      .post<any>(`${this.baseUrl}${url}`, formData)
+      .pipe(
+        map(res => new PostResponse<T>({ ok: true, body: res })),
+        catchError(this.handleError<any>(url, []))
+      )
+      .toPromise();
   }
 
   postFormData<T = {}>(url: string, obj: { [x: string]: any; }, files?: any[]): Promise<PostResponse<T>> {
@@ -325,21 +279,21 @@ export class BackendService {
     return this.http
       .delete<DeleteResponse>(this.baseUrl + url)
       .pipe(
-        map((res) => new DeleteResponse( {...res} )),
+        map((res) => new DeleteResponse({ ...res })),
         catchError(this.handleDeleteError(url, undefined))
       )
       .toPromise();
   }
-  
+
 
 
   private handleDeleteError(
     operation = 'operation',
-    result?: DeleteResponse 
+    result?: DeleteResponse
   ): (res: any) => Observable<DeleteResponse> {
     return (res: HttpErrorResponse): Observable<DeleteResponse> => {
       let error: DeleteResponse;
-  
+
       if (res?.error?.ModelState) {
         error = Object.keys(res.error.ModelState).map((x) => {
           return new DeleteResponse({
@@ -359,19 +313,19 @@ export class BackendService {
           StatusText: res.statusText,
         });
       }
-  
+
       this.log(error);
       return of((result || error) as DeleteResponse);
     };
   }
-  
+
   private handleError<T>(
     operation = 'operation',
     result?: T
   ): (res: any) => Observable<T> {
     return (res: HttpErrorResponse): Observable<T> => {
       let error: BaseResponse;
-  
+
       if (res?.error?.ModelState) {
         error = Object.keys(res.error.ModelState).map((x) => {
           return new BaseResponse({
@@ -381,16 +335,16 @@ export class BackendService {
             Status: res.status,
             StatusText: res.statusText,
           });
-        })[0]; 
+        })[0];
         this.log(error);
-        return of(error as unknown as T);  
+        return of(error as unknown as T);
       }
-  
+
       if (res.error?.error) {
         const message = typeof res.error.error === 'string'
           ? res.error.error
           : 'Unknown error occurred';
-          
+
         error = new BaseResponse({
           ok: false,
           ErrorCode: 'UnknownError',
@@ -399,9 +353,9 @@ export class BackendService {
           StatusText: res.statusText,
         });
         this.log(error);
-        return of(error as unknown as T); 
+        return of(error as unknown as T);
       }
-  
+
       if (!res.ok) {
         error = new BaseResponse({
           ok: false,
@@ -411,13 +365,13 @@ export class BackendService {
           StatusText: res.statusText,
         });
         this.log(error);
-        return of(error as unknown as T);  
+        return of(error as unknown as T);
       }
-  
+
       return of(result as T);
     };
   }
-  
+
   private log(message: any): void {
     console.log(message);
   }

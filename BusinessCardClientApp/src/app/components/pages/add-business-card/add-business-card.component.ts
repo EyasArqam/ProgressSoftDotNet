@@ -1,6 +1,7 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Gender } from '../../../shared/enums';
+import { BackendService } from '../../../shared/services/backend.service';
 
 @Component({
   selector: 'app-add-business-card',
@@ -9,6 +10,7 @@ import { Gender } from '../../../shared/enums';
 })
 export class AddBusinessCardComponent implements OnInit {
 
+  _backend = inject(BackendService);
   readonly panelOpenState = signal(true);
   businessCardForm: FormGroup = new FormGroup({});
   genders = Object.values(Gender);
@@ -32,6 +34,16 @@ export class AddBusinessCardComponent implements OnInit {
   onFilesSelected(files: File[]): void {
     this.selectedFiles = files;
     console.log('Selected files:', this.selectedFiles);
+
+    if (files.length == 1) {
+      this._backend.postFiles("BusinesCards/PostFiles", files).then((res) => {
+        if (res.ok) {
+
+        }
+      });
+    }
+
+
   }
 
   onPhotoChange(event: any) {
