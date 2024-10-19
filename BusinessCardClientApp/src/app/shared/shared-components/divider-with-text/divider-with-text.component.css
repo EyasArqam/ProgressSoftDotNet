@@ -1,0 +1,19 @@
+.divider-with-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    margin: 30px 0;
+}
+
+.divider-text {
+    background-color: white;
+    padding: 0 10px;
+    position: absolute;
+    color: gray;
+    font-weight: bold;
+}
+
+mat-divider {
+    width: 100%;
+}

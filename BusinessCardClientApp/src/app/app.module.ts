@@ -13,7 +13,7 @@ import { HomeComponent } from './components/home/home.component';
   declarations: [
     AppComponent,
     LayoutComponent,
-    HomeComponent
+    HomeComponent,
   ],
   imports: [
     BrowserModule,
