@@ -7,6 +7,7 @@ import { SharedModule } from '../../shared/shared-module/shared.module';
 import { DividerWithTextComponent } from "../../shared/shared-components/divider-with-text/divider-with-text.component";
 import { FileUploadModule } from '@iplab/ngx-file-upload';
 import { ImportFileComponent } from "../../shared/shared-components/import-file/import-file.component";
+import {MatGridListModule} from '@angular/material/grid-list';
 
 
 
@@ -21,7 +22,8 @@ import { ImportFileComponent } from "../../shared/shared-components/import-file/
     SharedModule,
     DividerWithTextComponent,
     FileUploadModule,
-    ImportFileComponent
+    ImportFileComponent,
+    MatGridListModule
 ],
 exports:[
   FileUploadModule
