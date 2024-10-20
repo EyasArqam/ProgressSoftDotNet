@@ -1,9 +1,5 @@
 ﻿using BusinessCardAPI.Interfaces;
 using BusinessCardAPI.Models.DTOs;
-using BusinessCardAPI.Models.Enums;
-using System.Net;
-using System.Numerics;
-using System.Reflection;
 using System.Xml.Linq;
 
 namespace BusinessCardAPI.Services

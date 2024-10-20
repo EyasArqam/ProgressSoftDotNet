@@ -3,10 +3,8 @@ using BusinessCardAPI.Data;
 using BusinessCardAPI.Interfaces;
 using BusinessCardAPI.Models.DTOs;
 using BusinessCardAPI.Models.Entities;
-using BusinessCardAPI.Models.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using static System.Collections.Specialized.BitVector32;
 
 
 namespace BusinessCardAPI.Controllers
