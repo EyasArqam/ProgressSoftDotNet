@@ -1,3 +1,4 @@
+using AutoMapper;
 using BusinessCardAPI.Controllers;
 using BusinessCardAPI.Data;
 using BusinessCardAPI.Interfaces;
@@ -31,7 +32,8 @@ public class BusinessCardsControllerTests
         // Arrange
         var context = GetInMemoryDbContext();
         var businessCardServiceMock = new Mock<IBusinessCardService>();
-        var controller = new BusinesCardsController(context, businessCardServiceMock.Object);
+        var mapperServiceMock = new Mock<IMapper>();
+        var controller = new BusinesCardsController(context, businessCardServiceMock.Object, mapperServiceMock.Object);
 
         // Act
         var result = await controller.GetAll();
@@ -46,11 +48,13 @@ public class BusinessCardsControllerTests
         // Arrange
         var context = GetInMemoryDbContext();
         var businessCardServiceMock = new Mock<IBusinessCardService>();
+        var mapperServiceMock = new Mock<IMapper>();
+
 
         context.BusinessCards.Add(new BusinessCard { Id = 1, Name = "Test Card", Email = "test@email.com", Phone = "0799999999", Address = "ssssss", IsDeleted = false });
         await context.SaveChangesAsync();
 
-        var controller = new BusinesCardsController(context, businessCardServiceMock.Object);
+        var controller = new BusinesCardsController(context, businessCardServiceMock.Object, mapperServiceMock.Object);
 
         // Act
         var result = await controller.GetAll();
@@ -73,7 +77,8 @@ public class BusinessCardsControllerTests
         // Arrange
         var context = GetInMemoryDbContext();
         var businessCardServiceMock = new Mock<IBusinessCardService>();
-        var controller = new BusinesCardsController(context, businessCardServiceMock.Object);
+        var mapperServiceMock = new Mock<IMapper>();
+        var controller = new BusinesCardsController(context, businessCardServiceMock.Object, mapperServiceMock.Object);
 
         // Act
         var result = await controller.PostFiles(null);
@@ -89,7 +94,8 @@ public class BusinessCardsControllerTests
         // Arrange
         var context = GetInMemoryDbContext();
         var businessCardServiceMock = new Mock<IBusinessCardService>();
-        var controller = new BusinesCardsController(context, businessCardServiceMock.Object);
+        var mapperServiceMock = new Mock<IMapper>();
+        var controller = new BusinesCardsController(context, businessCardServiceMock.Object, mapperServiceMock.Object);
 
         var fileMock = new Mock<IFormFile>();
         fileMock.Setup(_ => _.Length).Returns(0);
@@ -108,7 +114,8 @@ public class BusinessCardsControllerTests
         // Arrange
         var context = GetInMemoryDbContext();
         var businessCardServiceMock = new Mock<IBusinessCardService>();
-        var controller = new BusinesCardsController(context, businessCardServiceMock.Object);
+        var mapperServiceMock = new Mock<IMapper>();
+        var controller = new BusinesCardsController(context, businessCardServiceMock.Object, mapperServiceMock.Object);
 
         var fileMock = new Mock<IFormFile>();
         fileMock.Setup(_ => _.FileName).Returns("test.xml");
@@ -147,7 +154,8 @@ public class BusinessCardsControllerTests
         // Arrange
         var context = GetInMemoryDbContext();
         var businessCardServiceMock = new Mock<IBusinessCardService>();
-        var controller = new BusinesCardsController(context, businessCardServiceMock.Object);
+        var mapperServiceMock = new Mock<IMapper>();
+        var controller = new BusinesCardsController(context, businessCardServiceMock.Object, mapperServiceMock.Object);
 
         var fileMock = new Mock<IFormFile>();
         fileMock.Setup(_ => _.Length).Returns(10);
