@@ -267,7 +267,6 @@ public class BusinessCardsControllerTests
         }
     }
 
-
     [Fact]
     public async Task PostCsvFile_ShouldReturnInternalServerError_WhenExceptionOccurs()
     {
@@ -294,6 +293,53 @@ public class BusinessCardsControllerTests
         objectResult.Value.Should().BeOfType<string>()
             .Which.Should().Contain("Internal server error: Some error occurred.");
     }
+
+
+
+
+    [Fact]
+    public async Task PostForm_ShouldReturnOk_WhenFormDataIsValid()
+    {
+        // Arrange
+        var context = GetInMemoryDbContext();
+        var controller = new BusinesCardsController(context, null, null);  // Adjust this based on constructor
+
+        var businessCard = new BusinessCard
+        {
+            Name = "John Doe",
+            Email = "john.doe@example.com",
+            Phone = "123-456-7890",
+            Address = "123 Main St",
+            Gender = Models.Enums.Gender.Female,
+            DateOfBirth = new DateTime(1990, 1, 1),
+            Photo = "base64image"
+        };
+
+        // Act
+        var result = await controller.PostForm(businessCard);
+
+        // Assert
+        result.Should().BeOfType<OkObjectResult>();
+        var okResult = result as OkObjectResult;
+        okResult.Value.Should().BeEquivalentTo(new { message = "Business card processed successfully." });
+    }
+
+    [Fact]
+    public async Task PostForm_ShouldReturnBadRequest_WhenFormDataIsNull()
+    {
+        // Arrange
+        var context = GetInMemoryDbContext();
+        var controller = new BusinesCardsController(context, null, null);  // Adjust this based on constructor
+
+        // Act
+        var result = await controller.PostForm(null);
+
+        // Assert
+        result.Should().BeOfType<BadRequestObjectResult>();
+        var badRequestResult = result as BadRequestObjectResult;
+        badRequestResult.Value.Should().Be("Form data cannot be null.");
+    }
+
 
 }
 

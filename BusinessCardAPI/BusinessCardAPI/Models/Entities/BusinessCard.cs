@@ -13,7 +13,7 @@ namespace BusinessCardAPI.Models.Entities
         public Gender Gender { get; set; }
 
         [DataType(DataType.Date)]
-        public DateTime DateOfBirth { get; set; }
+        public DateTime? DateOfBirth { get; set; }
 
         [Required]
         [EmailAddress(ErrorMessage = "Invalid Email Address")]

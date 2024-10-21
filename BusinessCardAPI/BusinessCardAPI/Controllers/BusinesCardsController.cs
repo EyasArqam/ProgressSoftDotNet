@@ -131,6 +131,26 @@ namespace BusinessCardAPI.Controllers
             }
         }
 
+        [HttpPost("PostForm")]
+        public async Task<IActionResult> PostForm([FromBody] BusinessCard formData)
+        {
 
+            if (formData == null)
+            {
+                return BadRequest("Form data cannot be null.");
+            }
+
+            try
+            {
+                await _context.BusinessCards.AddAsync(formData);
+                await _context.SaveChangesAsync();
+
+                return Ok(new { message = "Business card processed successfully." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred while processing the form.");
+            }
+        }
     }
 }

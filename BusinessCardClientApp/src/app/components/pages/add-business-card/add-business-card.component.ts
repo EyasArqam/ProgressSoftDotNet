@@ -20,10 +20,10 @@ export class AddBusinessCardComponent implements OnInit {
   ngOnInit(): void {
     this.businessCardForm = new FormGroup({
       Name: new FormControl('', [Validators.required]),
-      DateOfBirth: new FormControl(''),
+      DateOfBirth: new FormControl(null),
       Email: new FormControl('', [Validators.required, Validators.email]),
       Phone: new FormControl('', [Validators.required]),
-      Gender: new FormControl(''),
+      Gender: new FormControl('', [Validators.required]),
       Address: new FormControl(''),
       Photo: new FormControl('')
     });
@@ -33,7 +33,6 @@ export class AddBusinessCardComponent implements OnInit {
 
   onFilesSelected(files: File[]): void {
     this.selectedFiles = files;
-    console.log('Selected files:', this.selectedFiles);
 
     if (files.length == 1) {
 
@@ -52,7 +51,7 @@ export class AddBusinessCardComponent implements OnInit {
     if (file) {
       const reader = new FileReader();
       reader.onload = (e: any) => {
-        this.photoBase64 = e.target.result;
+        this.photoBase64 = e.target.result as string;
       };
       reader.readAsDataURL(file);
     }
@@ -60,9 +59,24 @@ export class AddBusinessCardComponent implements OnInit {
 
   onSubmit() {
     if (this.businessCardForm.valid) {
-
+      const formData: any = {
+        Name: this.businessCardForm.get('Name')?.value,
+        DateOfBirth: this.businessCardForm.get('DateOfBirth')?.value ?? null, 
+        Email: this.businessCardForm.get('Email')?.value,
+        Phone: this.businessCardForm.get('Phone')?.value,
+        Gender: this.businessCardForm.get('Gender')?.value, 
+        Address: this.businessCardForm.get('Address')?.value,
+        Photo: this.photoBase64
+      };
+  
+      this._backend.post("BusinesCards/PostForm", formData).then((res) => {
+        if (res) {
+          
+        }
+      });
     }
   }
+  
 
 
   // #region File Handling Methods

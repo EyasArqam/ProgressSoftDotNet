@@ -5,7 +5,7 @@
             <mat-expansion-panel [expanded]="panelOpenState()" (opened)="panelOpenState.set(true)"
                 (closed)="panelOpenState.set(false)">
                 <mat-expansion-panel-header>
-                    <mat-panel-title> Import XML | CSV | QR Code </mat-panel-title>
+                    <mat-panel-title> Import XML | CSV </mat-panel-title>
                 </mat-expansion-panel-header>
 
                 <import-file (filesSelected)="onFilesSelected($event)"></import-file>

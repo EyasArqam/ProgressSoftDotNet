@@ -188,7 +188,7 @@ export class BackendService {
   }
 
 
-  post<T = {}>(url: string, obj: { [x: string]: any; }, files?: any[]): Promise<PostResponse<T>> {
+  post<T = {}>(url: string, obj: any): Promise<PostResponse<T>> {
     return this.http
       .post<any>(this.baseUrl + url, obj)
       .pipe(
