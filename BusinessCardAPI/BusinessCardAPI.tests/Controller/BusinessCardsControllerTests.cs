@@ -4,6 +4,7 @@ using BusinessCardAPI.Data;
 using BusinessCardAPI.Interfaces;
 using BusinessCardAPI.Models.DTOs;
 using BusinessCardAPI.Models.Entities;
+using BusinessCardAPI.Services;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -81,7 +82,7 @@ public class BusinessCardsControllerTests
         var controller = new BusinesCardsController(context, businessCardServiceMock.Object, mapperServiceMock.Object);
 
         // Act
-        var result = await controller.PostFiles(null);
+        var result = await controller.PostXmlFile(null);
 
         // Assert
         result.Should().BeOfType<BadRequestObjectResult>()
@@ -101,7 +102,7 @@ public class BusinessCardsControllerTests
         fileMock.Setup(_ => _.Length).Returns(0);
 
         // Act
-        var result = await controller.PostFiles(fileMock.Object);
+        var result = await controller.PostXmlFile(fileMock.Object);
 
         // Assert
         result.Should().BeOfType<BadRequestObjectResult>()
@@ -141,7 +142,7 @@ public class BusinessCardsControllerTests
             .ReturnsAsync(businessCardDTOs);
 
         // Act
-        var result = await controller.PostFiles(fileMock.Object);
+        var result = await controller.PostXmlFile(fileMock.Object);
 
         // Assert
         result.Should().BeOfType<OkObjectResult>()
@@ -158,6 +159,7 @@ public class BusinessCardsControllerTests
         var controller = new BusinesCardsController(context, businessCardServiceMock.Object, mapperServiceMock.Object);
 
         var fileMock = new Mock<IFormFile>();
+        fileMock.Setup(_ => _.FileName).Returns("test.xml");
         fileMock.Setup(_ => _.Length).Returns(10);
 
         businessCardServiceMock
@@ -165,7 +167,7 @@ public class BusinessCardsControllerTests
             .Throws(new Exception("Some error occurred."));
 
         // Act
-        var result = await controller.PostFiles(fileMock.Object);
+        var result = await controller.PostXmlFile(fileMock.Object);
 
         // Assert
         var objectResult = result.Should().BeOfType<ObjectResult>().Which;
@@ -175,6 +177,123 @@ public class BusinessCardsControllerTests
     }
 
 
+
+    [Fact]
+    public async Task PostCsvFile_ShouldReturnBadRequest_WhenNoFileUploaded()
+    {
+        // Arrange
+        var context = GetInMemoryDbContext();
+        var businessCardServiceMock = new Mock<IBusinessCardService>();
+        var mapperServiceMock = new Mock<IMapper>();
+        var controller = new BusinesCardsController(context, businessCardServiceMock.Object, mapperServiceMock.Object);
+
+        // Act
+        var result = await controller.PostCsvFile(null);
+
+        // Assert
+        result.Should().BeOfType<BadRequestObjectResult>()
+            .Which.Value.Should().Be("No file uploaded.");
+    }
+
+    [Fact]
+    public async Task PostCsvFile_ShouldReturnBadRequest_WhenFileIsEmpty()
+    {
+        // Arrange
+        var context = GetInMemoryDbContext();
+        var businessCardServiceMock = new Mock<IBusinessCardService>();
+        var mapperServiceMock = new Mock<IMapper>();
+        var controller = new BusinesCardsController(context, businessCardServiceMock.Object, mapperServiceMock.Object);
+
+        var fileMock = new Mock<IFormFile>();
+        fileMock.Setup(_ => _.Length).Returns(0);
+
+        // Act
+        var result = await controller.PostCsvFile(fileMock.Object);
+
+        // Assert
+        result.Should().BeOfType<BadRequestObjectResult>()
+            .Which.Value.Should().Be("No file uploaded.");
+    }
+
+    [Fact]
+    public async Task PostCsvFile_ShouldReturnBadRequest_WhenFileTypeIsNotCsv()
+    {
+        // Arrange
+        var context = GetInMemoryDbContext();
+        var businessCardServiceMock = new Mock<IBusinessCardService>();
+        var mapperServiceMock = new Mock<IMapper>();
+        var controller = new BusinesCardsController(context, businessCardServiceMock.Object, mapperServiceMock.Object);
+
+        var fileMock = new Mock<IFormFile>();
+        fileMock.Setup(_ => _.FileName).Returns("test.txt");
+        fileMock.Setup(_ => _.Length).Returns(10);
+
+        // Act
+        var result = await controller.PostCsvFile(fileMock.Object);
+
+        // Assert
+        result.Should().BeOfType<BadRequestObjectResult>()
+            .Which.Value.Should().Be("Unsupported file type. Please upload an CSV file.");
+    }
+
+    [Fact]
+    public async Task ReadBusinessCardsFromCsv_ShouldReturnSuccess_WhenFileIsValid()
+    {
+        // Arrange
+        var businessCardService = new BusinessCardService();
+
+        var fileMock = new Mock<IFormFile>();
+        fileMock.Setup(_ => _.FileName).Returns("test.csv");
+        fileMock.Setup(_ => _.Length).Returns(10);
+
+        using (var stream = new MemoryStream())
+        {
+            var writer = new StreamWriter(stream);
+            writer.Write("Name,Gender,DateOfBirth,Email,Phone,Address\nJohn Doe,Male,1990-01-01,john.doe@example.com,123-456-7890,123 Main St");
+            writer.Flush();
+            stream.Position = 0;
+            fileMock.Setup(_ => _.OpenReadStream()).Returns(stream);
+
+            // Act
+            var result = await businessCardService.ReadBusinessCardsFromCsv(fileMock.Object);
+
+            // Assert
+            result.Ok.Should().BeTrue();
+            result.Data.Should().NotBeNull();
+            result.Data.Should().HaveCount(1);
+            var businessCard = result.Data.First();
+            businessCard.Name.Should().Be("John Doe");
+            businessCard.Gender.Should().Be("Male");
+        }
+    }
+
+
+    [Fact]
+    public async Task PostCsvFile_ShouldReturnInternalServerError_WhenExceptionOccurs()
+    {
+        // Arrange
+        var context = GetInMemoryDbContext();
+        var businessCardServiceMock = new Mock<IBusinessCardService>();
+        var mapperServiceMock = new Mock<IMapper>();
+        var controller = new BusinesCardsController(context, businessCardServiceMock.Object, mapperServiceMock.Object);
+
+        var fileMock = new Mock<IFormFile>();
+        fileMock.Setup(_ => _.FileName).Returns("test.csv");
+        fileMock.Setup(_ => _.Length).Returns(10);
+
+        businessCardServiceMock
+            .Setup(service => service.ReadBusinessCardsFromCsv(fileMock.Object))
+            .Throws(new Exception("Some error occurred."));
+
+        // Act
+        var result = await controller.PostCsvFile(fileMock.Object);
+
+        // Assert
+        var objectResult = result.Should().BeOfType<ObjectResult>().Which;
+        objectResult.StatusCode.Should().Be(500);
+        objectResult.Value.Should().BeOfType<string>()
+            .Which.Should().Contain("Internal server error: Some error occurred.");
+    }
 
 }
 

@@ -37,10 +37,10 @@ namespace BusinessCardAPI.Controllers
             return Ok(businessCards);
         }
 
-        [HttpPost("PostFiles")]
-        public async Task<IActionResult> PostFiles([FromForm] IFormFile file)
+        [HttpPost("PostXmlFile")]
+        public async Task<IActionResult> PostXmlFile([FromForm] IFormFile file)
         {
-            
+
             if (file == null || file.Length == 0)
             {
                 return BadRequest("No file uploaded.");
@@ -48,6 +48,17 @@ namespace BusinessCardAPI.Controllers
 
             try
             {
+
+                var fileExtension = Path.GetExtension(file.FileName).ToLowerInvariant();
+
+                if (fileExtension != ".xml")
+                {
+                    return BadRequest("Unsupported file type. Please upload an XML file.");
+                }
+
+
+                List<BusinessCard> businessCards = new List<BusinessCard>();
+
                 var businessCardDTOs = await _businessCardService.ReadBusinessCardsFromXml(file);
 
                 if (!businessCardDTOs.Ok)
@@ -55,19 +66,64 @@ namespace BusinessCardAPI.Controllers
                     return BadRequest(businessCardDTOs.Message);
                 }
 
-                List<BusinessCard> businessCards = new List<BusinessCard>();
                 foreach (var item in businessCardDTOs.Data)
                 {
-                    BusinessCard businessCard = _mapper.Map<BusinessCard>((BusinessCardDTO)item);
-
+                    BusinessCard businessCard = _mapper.Map<BusinessCard>(item);
                     businessCards.Add(businessCard);
                 }
 
-                _context.BusinessCards.AddRangeAsync(businessCards);
+
+                await _context.BusinessCards.AddRangeAsync(businessCards);
 
                 await _context.SaveChangesAsync();
 
-                return Ok(new { message = "Business cards processed successfully.", records = businessCardDTOs.Data });
+                return Ok(new { message = "Business cards processed successfully.", records = businessCards });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpPost("PostCsvFile")]
+        public async Task<IActionResult> PostCsvFile([FromForm] IFormFile file)
+        {
+
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest("No file uploaded.");
+            }
+
+            try
+            {
+                var fileExtension = Path.GetExtension(file.FileName).ToLowerInvariant();
+
+                if (fileExtension != ".csv")
+                {
+                    return BadRequest("Unsupported file type. Please upload an CSV file.");
+                }
+
+                List<BusinessCard> businessCards = new List<BusinessCard>();
+
+                var businessCardDTOs = await _businessCardService.ReadBusinessCardsFromCsv(file);
+
+                if (!businessCardDTOs.Ok)
+                {
+                    return BadRequest(businessCardDTOs.Message);
+                }
+
+                foreach (var item in businessCardDTOs.Data)
+                {
+                    BusinessCard businessCard = _mapper.Map<BusinessCard>(item);
+                    businessCards.Add(businessCard);
+                }
+
+
+                await _context.BusinessCards.AddRangeAsync(businessCards);
+
+                await _context.SaveChangesAsync();
+
+                return Ok(new { message = "Business cards processed successfully.", records = businessCards });
             }
             catch (Exception ex)
             {

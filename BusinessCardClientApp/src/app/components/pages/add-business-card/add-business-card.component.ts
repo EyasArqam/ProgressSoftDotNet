@@ -36,11 +36,12 @@ export class AddBusinessCardComponent implements OnInit {
     console.log('Selected files:', this.selectedFiles);
 
     if (files.length == 1) {
-      this._backend.postFiles("BusinesCards/PostFiles", files).then((res) => {
-        if (res.ok) {
 
-        }
-      });
+      const file = files[0];
+      const fileExtension = this.getFileExtension(file.name);
+
+      this.processFileByExtension(fileExtension, files);
+
     }
 
 
@@ -62,5 +63,42 @@ export class AddBusinessCardComponent implements OnInit {
 
     }
   }
+
+
+  // #region File Handling Methods
+  getFileExtension(fileName: string): string | undefined {
+    return fileName.split('.').pop()?.toLowerCase();
+  }
+
+  processFileByExtension(extension: string | undefined, files: File[]): void {
+    if (extension === 'xml') {
+      this.postXmlFile(files);
+    } else if (extension === 'csv') {
+      this.postCsvFile(files);
+    } else {
+      console.error("Unsupported file type. Please upload an XML or CSV file.");
+    }
+  }
+
+  postXmlFile(files: File[]): void {
+    this._backend.postFiles("BusinesCards/PostXmlFile", files).then((res) => {
+      this.handleResponse(res, 'XML file processed successfully.');
+    });
+  }
+
+  postCsvFile(files: File[]): void {
+    this._backend.postFiles("BusinesCards/PostCsvFile", files).then((res) => {
+      this.handleResponse(res, 'CSV file processed successfully.');
+    });
+  }
+
+  handleResponse(res: any, successMessage: string): void {
+    if (res.ok) {
+      console.log(successMessage);
+    } else {
+      console.error("Error processing file:", res.message);
+    }
+  }
+  // #endregion
 
 }

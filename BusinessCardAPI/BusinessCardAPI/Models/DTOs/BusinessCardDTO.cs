@@ -1,6 +1,4 @@
-﻿using BusinessCardAPI.Attributes;
-using BusinessCardAPI.Models.Enums;
-using System.ComponentModel.DataAnnotations;
+﻿
 
 namespace BusinessCardAPI.Models.DTOs
 {
@@ -9,7 +7,7 @@ namespace BusinessCardAPI.Models.DTOs
 
         public string Name { get; set; }
         
-        public int Gender { get; set; }
+        public string Gender { get; set; }
 
         public DateTime? DateOfBirth { get; set; }
 

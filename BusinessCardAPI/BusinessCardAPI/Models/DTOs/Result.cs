@@ -1,9 +1,11 @@
-﻿namespace BusinessCardAPI
+﻿using BusinessCardAPI.Models.DTOs;
+
+namespace BusinessCardAPI
 {
     public class Result
     {
         public bool Ok { get; set; }
-        public dynamic? Data { get; set; } = null;
+        public List<BusinessCardDTO>? Data { get; set; } = null;
         public string Message { get; set; } = "";
     }
 }
