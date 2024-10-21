@@ -10,7 +10,10 @@
           <div class="card">
             <div class="front">
               <div class="logo">
-                <img loading="lazy" [src]="'assets/images/logo-test.jpg'" alt="Logo" /> <!-- 'data:image/png;base64,' + logoBase64  -->
+                <img *ngIf="item.photo; else noImageTemplate" loading="lazy" [src]="item.photo" alt="Logo" />
+                <ng-template #noImageTemplate>
+                  <img loading="lazy" src="assets/images/noimage.png" alt="No Image Available" />
+                </ng-template>
               </div>
             </div>
             <div class="back">
