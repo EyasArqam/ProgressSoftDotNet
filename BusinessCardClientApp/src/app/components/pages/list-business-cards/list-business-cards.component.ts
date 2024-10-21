@@ -14,7 +14,7 @@ export class ListBusinessCardsComponent implements OnInit {
   cols: number = 2;
   businessCards: BusinessCard[] = [];
   _backend = inject(BackendService);
-
+  IsAction = false;
 
 
   ngOnInit(): void {
@@ -43,5 +43,10 @@ export class ListBusinessCardsComponent implements OnInit {
 
   getCols() {
     return this.cols;
+  }
+
+
+  activeActions(){
+    this.IsAction = !this.IsAction;
   }
 }
