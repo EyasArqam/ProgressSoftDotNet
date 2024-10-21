@@ -275,12 +275,12 @@ export class BackendService {
       .toPromise();
   }
 
-  delete(url: string): Promise<DeleteResponse | undefined> {
+  delete(url: string): Promise<DeleteResponse | any> {
     return this.http
       .delete<DeleteResponse>(this.baseUrl + url)
       .pipe(
-        map((res) => new DeleteResponse({ ...res })),
-        catchError(this.handleDeleteError(url, undefined))
+        map((res) => new DeleteResponse({ ok: true})),
+        catchError(this.handleDeleteError(url))
       )
       .toPromise();
   }

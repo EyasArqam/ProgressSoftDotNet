@@ -20,12 +20,16 @@ export class ListBusinessCardsComponent implements OnInit {
   ngOnInit(): void {
     this.updateCols(window.innerWidth);
 
+    this.loadBusinessCards();
+
+  }
+
+  loadBusinessCards() {
     this._backend.get("BusinesCards/GetAllBusinessCards").then((res) => {
       if (res.ok) {
-        this.businessCards =  res.body;
+        this.businessCards = res.body;
       }
     });
-    
   }
 
   onResize(event: Event) {
@@ -46,7 +50,20 @@ export class ListBusinessCardsComponent implements OnInit {
   }
 
 
-  activeActions(){
+  activeActions() {
     this.IsAction = !this.IsAction;
+  }
+
+  deleteCard(Id: number) {
+    if (!Id) {
+      return;
+    }
+
+    this._backend.delete("BusinesCards/DeleteBusinessCard/" + Id).then((res) => {
+      if (res?.ok) {
+        this.loadBusinessCards();
+      }
+    });
+
   }
 }

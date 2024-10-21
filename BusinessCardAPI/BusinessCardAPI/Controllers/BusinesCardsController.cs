@@ -152,5 +152,22 @@ namespace BusinessCardAPI.Controllers
                 return StatusCode(500, "An error occurred while processing the form.");
             }
         }
+
+        [HttpDelete("DeleteBusinessCard/{id}")]
+        public async Task<IActionResult> DeleteBusinessCard(int id)
+        {
+            var businessCard = await _context.BusinessCards.FindAsync(id);
+
+            if (businessCard == null)
+            {
+                return NotFound(); 
+            }
+
+            businessCard.IsDeleted = true;
+
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Business card deleted successfully." });
+        }
     }
 }

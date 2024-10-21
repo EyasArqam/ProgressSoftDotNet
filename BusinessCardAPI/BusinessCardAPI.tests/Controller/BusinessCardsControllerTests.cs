@@ -341,5 +341,55 @@ public class BusinessCardsControllerTests
     }
 
 
+
+
+    [Fact]
+    public async Task DeleteBusinessCard_ShouldReturnOk_WhenBusinessCardIsDeleted()
+    {
+        // Arrange
+        var context = GetInMemoryDbContext();
+        var controller = new BusinesCardsController(context, null, null);
+
+        // Add a business card to the in-memory database
+        var businessCard = new BusinessCard
+        {
+            Name = "John Doe",
+            Email = "john.doe@example.com",
+            Phone = "123-456-7890",
+            Address = "123 Main St",
+            Gender = Models.Enums.Gender.Male,
+            DateOfBirth = new DateTime(1990, 1, 1),
+            Photo = "base64image"
+        };
+        context.BusinessCards.Add(businessCard);
+        await context.SaveChangesAsync();
+
+        // Act
+        var result = await controller.DeleteBusinessCard(businessCard.Id);
+
+        // Assert
+        result.Should().BeOfType<OkObjectResult>()
+            .Which.Value.Should().BeEquivalentTo(new { message = "Business card deleted successfully." });
+
+        // Verify that the business card is marked as deleted
+        var deletedCard = await context.BusinessCards.FindAsync(businessCard.Id);
+        deletedCard.Should().NotBeNull();
+        deletedCard.IsDeleted.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task DeleteBusinessCard_ShouldReturnNotFound_WhenBusinessCardDoesNotExist()
+    {
+        // Arrange
+        var context = GetInMemoryDbContext();
+        var controller = new BusinesCardsController(context, null, null);
+        var nonExistentId = 999; // An ID that does not exist
+
+        // Act
+        var result = await controller.DeleteBusinessCard(nonExistentId);
+
+        // Assert
+        result.Should().BeOfType<NotFoundResult>();
+    }
 }
 

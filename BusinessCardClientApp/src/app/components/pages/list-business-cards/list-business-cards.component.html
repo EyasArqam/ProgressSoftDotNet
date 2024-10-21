@@ -7,13 +7,13 @@
     </button>
 
     <mat-grid-list [cols]="getCols()" rowHeight="2:1" gutterSize="16px">
-      @for (item of businessCards; track $index) {
+      @for (card of businessCards; track $index) {
       <mat-grid-tile>
 
 
         <div [ngClass]="{'blur': IsAction}">
           <span *ngIf="IsAction" [ngClass]="{'action': IsAction}">
-            <span class="delete-icon icon-pointer"><mat-icon>&#xe872;</mat-icon></span>
+            <span class="delete-icon icon-pointer" (click)="deleteCard(card.id)"><mat-icon>&#xe872;</mat-icon></span>
             <span class="export-xml icon-pointer"><span>XML</span></span>
             <span class="export-csv icon-pointer"><span>CSV</span></span>
           </span>
@@ -22,18 +22,18 @@
             <div class="card">
               <div class="front">
                 <div class="logo">
-                  <img *ngIf="item.photo; else noImageTemplate" loading="lazy" [src]="item.photo" alt="Logo" />
+                  <img *ngIf="card.photo; else noImageTemplate" loading="lazy" [src]="card.photo" alt="Logo" />
                   <ng-template #noImageTemplate>
                     <img loading="lazy" src="assets/images/noimage.png" alt="No Image Available" />
                   </ng-template>
                 </div>
               </div>
               <div class="back">
-                <h1>{{item.name}}</h1>
+                <h1>{{card.name}}</h1>
                 <ul>
-                  <li class="truncate" [matTooltip]="item.phone" matTooltipPosition="above">{{item.phone}}</li>
-                  <li class="truncate" [matTooltip]="item.email" matTooltipPosition="above">{{item.email}}</li>
-                  <li class="truncate" [matTooltip]="item.address" matTooltipPosition="above">{{item.address}}</li>
+                  <li class="truncate" [matTooltip]="card.phone" matTooltipPosition="above">{{card.phone}}</li>
+                  <li class="truncate" [matTooltip]="card.email" matTooltipPosition="above">{{card.email}}</li>
+                  <li class="truncate" [matTooltip]="card.address" matTooltipPosition="above">{{card.address}}</li>
                 </ul>
               </div>
             </div>
