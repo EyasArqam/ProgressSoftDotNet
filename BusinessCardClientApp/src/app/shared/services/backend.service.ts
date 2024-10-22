@@ -311,6 +311,13 @@ export class BackendService {
       .toPromise();
   }
 
+  getObservable(url: string): Observable<any> {
+    url = url.replace('null', '');
+    return this.http
+      .get<any>(this.baseUrl + url)
+      .pipe(catchError(this.handleError<any>(url, [])));
+  }
+
   private downloadFile(data: Blob, filename: string) {
     const url = window.URL.createObjectURL(data);
     const a = document.createElement('a');

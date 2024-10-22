@@ -1,0 +1,15 @@
+<mat-form-field appearance="fill">
+    <mat-label>{{ placeholder }}</mat-label>
+    <input 
+    type="text" 
+    matInput 
+    [formControl]="formControl" 
+    [matAutocomplete]="auto" 
+    (blur)="onTouched()"
+    (input)="onChange($event.target)">
+    <mat-autocomplete #auto="matAutocomplete">
+        <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+            {{ option }}
+        </mat-option>
+    </mat-autocomplete>
+</mat-form-field>

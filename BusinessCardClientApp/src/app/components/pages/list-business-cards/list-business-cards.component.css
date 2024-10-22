@@ -2,40 +2,47 @@
     margin: 20px;
     min-height: 88vh;
 }
-.action-button{
+
+.filter-container {
+    display: flex;
+    gap: 20px;
+}
+
+.action-button {
     margin: 7px;
 }
 
 .blur {
-    position: relative; 
+    position: relative;
 }
 
 .blur::before {
-    content: ''; 
-    position: absolute; 
+    content: '';
+    position: absolute;
     top: 0;
     left: 0;
-    right: 0; 
-    bottom: 0; 
+    right: 0;
+    bottom: 0;
     height: 70px;
     background: linear-gradient(to bottom, rgb(199 199 199 / 80%), rgba(255, 255, 255, 0.5));
-    
+
     backdrop-filter: blur(2px);
-    z-index: 1; 
-}
-.blur::after {
-    content: ''; 
-    position: absolute; 
-    top: 0;
-    left: 0;
-    right: 0; 
-    bottom: 0; 
-    background: linear-gradient(bottom, rgba(0, 0, 0, 0.7), rgba(255, 255, 255, 0.5));
-    backdrop-filter: blur(2px);
-    z-index: 1; 
+    z-index: 1;
 }
 
-.action{
+.blur::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(bottom, rgba(0, 0, 0, 0.7), rgba(255, 255, 255, 0.5));
+    backdrop-filter: blur(2px);
+    z-index: 1;
+}
+
+.action {
     position: absolute;
     top: 10px;
     left: 10px;
@@ -46,23 +53,29 @@
 
 }
 
-.delete-icon{
+mat-grid-tile {
+    border-radius: 9px;
+}
+
+.delete-icon {
     color: red;
 }
-.export-xml{
-    font-weight: bold;
-}
-.export-csv{
+
+.export-xml {
     font-weight: bold;
 }
 
-.icon-pointer{
+.export-csv {
+    font-weight: bold;
+}
+
+.icon-pointer {
     cursor: pointer;
 }
 
 .card {
-    position: relative; 
-    z-index: 2; 
+    position: relative;
+    z-index: 2;
 }
 
 

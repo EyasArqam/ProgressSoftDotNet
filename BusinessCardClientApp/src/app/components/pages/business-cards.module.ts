@@ -8,6 +8,7 @@ import { DividerWithTextComponent } from "../../shared/shared-components/divider
 import { FileUploadModule } from '@iplab/ngx-file-upload';
 import { ImportFileComponent } from "../../shared/shared-components/import-file/import-file.component";
 import {MatGridListModule} from '@angular/material/grid-list';
+import { AutocompleteComponent } from "../../shared/shared-components/autocomplete/autocomplete.component";
 
 
 
@@ -23,7 +24,8 @@ import {MatGridListModule} from '@angular/material/grid-list';
     DividerWithTextComponent,
     FileUploadModule,
     ImportFileComponent,
-    MatGridListModule
+    MatGridListModule,
+    AutocompleteComponent,
 ],
 exports:[
   FileUploadModule

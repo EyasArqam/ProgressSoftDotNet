@@ -1,10 +1,18 @@
 <mat-card class="main-card" appearance="outlined">
   <mat-card-content>
 
-    <button mat-fab extended color="primary" class="action-button" (click)="activeActions()">
-      <mat-icon>&#xe5d4;</mat-icon>
-      Action
-    </button>
+    <div class="filter-container">
+      <button mat-fab extended color="primary" class="action-button" (click)="activeActions()">
+        <mat-icon>&#xe5d4;</mat-icon>
+        Action
+      </button>
+
+      <from [formGroup]="formFilter">
+        <autocomplete [url]="'BusinesCards/ListName'" [placeholder]="'Name'" label="Filter" formControlName="Name">
+        </autocomplete>
+      </from>
+
+    </div>
 
     <mat-grid-list [cols]="getCols()" rowHeight="2:1" gutterSize="16px">
       @for (card of businessCards; track $index) {
@@ -38,7 +46,7 @@
               </div>
             </div>
           </div>
-          
+
         </div>
 
       </mat-grid-tile>

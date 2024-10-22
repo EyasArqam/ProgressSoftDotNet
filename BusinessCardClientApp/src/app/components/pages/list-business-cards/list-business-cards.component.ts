@@ -1,6 +1,7 @@
 import { Component, HostListener, inject, OnInit } from '@angular/core';
 import { BusinessCard } from '../../../data/models/BusinessCard';
 import { BackendService } from '../../../shared/services/backend.service';
+import { FormControl, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-list-business-cards',
@@ -15,7 +16,9 @@ export class ListBusinessCardsComponent implements OnInit {
   businessCards: BusinessCard[] = [];
   _backend = inject(BackendService);
   IsAction = false;
-
+  formFilter = new FormGroup({
+    Name: new FormControl('')
+  });
 
   ngOnInit(): void {
     this.updateCols(window.innerWidth);

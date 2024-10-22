@@ -229,6 +229,25 @@ namespace BusinessCardAPI.Controllers
             }
         }
 
+        [HttpGet("ListName")]
+        public async Task<IActionResult> GetListOfName([FromQuery] string? searchTerm)
+        {
+            var businessCardsQuery = _context.BusinessCards.AsNoTracking().Where(bc => !bc.IsDeleted);
+
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                businessCardsQuery = businessCardsQuery.Where(bc => bc.Name.Contains(searchTerm));
+            }
+
+            var businessCards = await businessCardsQuery.Select(bc => bc.Name).ToListAsync();
+
+            if (businessCards.Count == 0)
+            {
+                return NoContent();
+            }
+
+            return Ok(businessCards);
+        }
 
     }
 
