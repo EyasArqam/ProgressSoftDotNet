@@ -9,6 +9,7 @@ namespace BusinessCardAPI.Mappers
         public MappingProfiles()
         {
             CreateMap<BusinessCardDTO, BusinessCard>();
+            CreateMap<BusinessCard, businessCard>();
         }
     }
 }

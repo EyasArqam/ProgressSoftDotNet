@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Moq;
-
+using System.Text;
 
 namespace BusinessCardAPI.tests.Controller;
 
@@ -390,6 +390,75 @@ public class BusinessCardsControllerTests
 
         // Assert
         result.Should().BeOfType<NotFoundResult>();
+    }
+
+
+
+
+    [Fact]
+    public async Task ExportXml_ReturnsNotFound_WhenBusinessCardDoesNotExist()
+    {
+        // Arrange
+        var context = GetInMemoryDbContext();
+        var businessCardServiceMock = new Mock<IBusinessCardService>();
+        var mapperServiceMock = new Mock<IMapper>();
+        var controller = new BusinesCardsController(context, businessCardServiceMock.Object, mapperServiceMock.Object);
+
+        // Act
+        var result = await controller.ExportXml(999);
+
+        // Assert
+        result.Should().BeOfType<NotFoundResult>();
+    }
+
+    [Fact]
+    public async Task ExportXml_ReturnsFileResult_WhenBusinessCardExists()
+    {
+        // Arrange
+        var context = GetInMemoryDbContext();
+        var businessCardServiceMock = new Mock<IBusinessCardService>();
+        var mapperServiceMock = new Mock<IMapper>();
+
+        var testBusinessCard = new BusinessCard
+        {
+            Id = 1,
+            Name = "John Doe",
+            Email = "john.doe@example.com",
+            Phone = "123-456-7890",
+            Address = "123 Main St, Springfield, USA"
+        };
+
+        context.BusinessCards.Add(testBusinessCard);
+        await context.SaveChangesAsync();
+
+        mapperServiceMock.Setup(m => m.Map<businessCard>(It.IsAny<BusinessCard>()))
+            .Returns(new businessCard
+            {
+                Name = "John Doe",
+                Email = "john.doe@example.com",
+                Phone = "123-456-7890",
+                Address = "123 Main St, Springfield, USA"
+            });
+
+        var controller = new BusinesCardsController(context, businessCardServiceMock.Object, mapperServiceMock.Object);
+
+        // Act
+        var result = await controller.ExportXml(1);
+
+        // Assert
+        result.Should().BeOfType<FileContentResult>();
+
+        var fileResult = result as FileContentResult;
+        fileResult.ContentType.Should().Be("application/xml");
+        fileResult.FileDownloadName.Should().Be("businessCard_1.xml");
+
+        var xmlContent = Encoding.UTF8.GetString(fileResult.FileContents);
+
+        xmlContent.Should().Contain("</businessCard>");
+        xmlContent.Should().Contain("<Name>John Doe</Name>");
+        xmlContent.Should().Contain("<Email>john.doe@example.com</Email>");
+        xmlContent.Should().Contain("<Phone>123-456-7890</Phone>");
+        xmlContent.Should().Contain("<Address>123 Main St, Springfield, USA</Address>");
     }
 }
 

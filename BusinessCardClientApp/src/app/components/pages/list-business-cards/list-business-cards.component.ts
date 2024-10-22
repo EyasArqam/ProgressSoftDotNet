@@ -66,4 +66,13 @@ export class ListBusinessCardsComponent implements OnInit {
     });
 
   }
+  
+  exportXml(Id: number){
+    this._backend.ExportXml("BusinesCards/ExportXml", Id).then((res) => {
+      if (res.ok) {
+        
+      }
+    });
+
+  }
 }

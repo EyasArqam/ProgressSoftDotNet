@@ -5,7 +5,8 @@ using BusinessCardAPI.Models.DTOs;
 using BusinessCardAPI.Models.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-
+using System.Text;
+using System.Xml.Serialization;
 
 namespace BusinessCardAPI.Controllers
 {
@@ -160,7 +161,7 @@ namespace BusinessCardAPI.Controllers
 
             if (businessCard == null)
             {
-                return NotFound(); 
+                return NotFound();
             }
 
             businessCard.IsDeleted = true;
@@ -169,5 +170,39 @@ namespace BusinessCardAPI.Controllers
 
             return Ok(new { message = "Business card deleted successfully." });
         }
+
+        [HttpGet("ExportXml/{id}")]
+        public async Task<IActionResult> ExportXml(int id)
+        {
+            var findBusinessCard = await _context.BusinessCards.FindAsync(id);
+
+            if (findBusinessCard == null)
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                businessCard businessCard = _mapper.Map<businessCard>(findBusinessCard);
+
+
+                var serializer = new XmlSerializer(typeof(businessCard));
+                using var stringWriter = new StringWriter();
+                serializer.Serialize(stringWriter, businessCard);
+                var xmlContent = stringWriter.ToString();
+
+                var bytes = Encoding.UTF8.GetBytes(xmlContent);
+
+                return File(bytes, "application/xml", $"businessCard_{id}.xml");
+
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        }
+
     }
+
 }
