@@ -5,6 +5,7 @@ using CsvHelper;
 using CsvHelper.Configuration;
 using System.Formats.Asn1;
 using System.Globalization;
+using System.Text;
 using System.Xml.Linq;
 
 namespace BusinessCardAPI.Services
@@ -95,6 +96,14 @@ namespace BusinessCardAPI.Services
             }
         }
 
+        public string ConvertToCsv(businessCard businessCard)
+        {
+            var csvBuilder = new StringBuilder();
+            csvBuilder.AppendLine("Name,Email,Phone,DateOfBirth,Address,Gender");
 
+            csvBuilder.AppendLine($"{businessCard.Name},{businessCard.Email},{businessCard.Phone},{businessCard.DateOfBirth},{businessCard.Address},{businessCard.Gender}");
+
+            return csvBuilder.ToString();
+        }
     }
 }

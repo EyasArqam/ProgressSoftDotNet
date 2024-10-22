@@ -75,4 +75,14 @@ export class ListBusinessCardsComponent implements OnInit {
     });
 
   }
+
+  exportCsv(Id: number){
+    this._backend.ExportCsv("BusinesCards/ExportCsv", Id).then((res) => {
+      if (res.ok) {
+        
+      }
+    });
+
+  }
+
 }

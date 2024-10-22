@@ -298,6 +298,19 @@ export class BackendService {
       .toPromise();
   }
 
+  ExportCsv<T = {}>(url: string, id: number): Promise<any> {
+    return this.http
+      .get(this.baseUrl + `${url}/${id}`, { responseType: 'blob' })
+      .pipe(
+        map((res: Blob) => {
+          this.downloadFile(res, 'BusinessCard.csv');
+          return new GetResponse({ ok: true, body: res });
+        }),
+        catchError(this.handleError<any>(`${url}/${id}`, []))
+      )
+      .toPromise();
+  }
+
   private downloadFile(data: Blob, filename: string) {
     const url = window.URL.createObjectURL(data);
     const a = document.createElement('a');

@@ -6,5 +6,6 @@ namespace BusinessCardAPI.Interfaces
     {
         Task<Result> ReadBusinessCardsFromXml(IFormFile file);
         Task<Result> ReadBusinessCardsFromCsv(IFormFile file);
+        string ConvertToCsv(businessCard businessCard);
     }
 }

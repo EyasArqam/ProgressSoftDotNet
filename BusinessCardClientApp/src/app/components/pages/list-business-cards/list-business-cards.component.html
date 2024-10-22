@@ -15,7 +15,7 @@
           <span *ngIf="IsAction" [ngClass]="{'action': IsAction}">
             <span class="delete-icon icon-pointer" (click)="deleteCard(card.id)"><mat-icon>&#xe872;</mat-icon></span>
             <span class="export-xml icon-pointer" (click)="exportXml(card.id)"><span>XML</span></span>
-            <span class="export-csv icon-pointer"><span>CSV</span></span>
+            <span class="export-csv icon-pointer" (click)="exportCsv(card.id)"><span>CSV</span></span>
           </span>
 
           <div class="container">

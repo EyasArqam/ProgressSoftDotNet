@@ -203,6 +203,33 @@ namespace BusinessCardAPI.Controllers
 
         }
 
+        [HttpGet("ExportCsv/{id}")]
+        public async Task<IActionResult> ExportCsv(int id)
+        {
+            var findBusinessCard = await _context.BusinessCards.FindAsync(id);
+
+            if (findBusinessCard == null)
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                businessCard businessCard = _mapper.Map<businessCard>(findBusinessCard);
+
+                var csvContent = _businessCardService.ConvertToCsv(businessCard);
+
+                var bytes = Encoding.UTF8.GetBytes(csvContent);
+
+                return File(bytes, "text/csv", $"BusinessCard_{id}.csv");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
     }
 
 }

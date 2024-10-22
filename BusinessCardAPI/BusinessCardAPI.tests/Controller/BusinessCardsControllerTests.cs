@@ -460,5 +460,96 @@ public class BusinessCardsControllerTests
         xmlContent.Should().Contain("<Phone>123-456-7890</Phone>");
         xmlContent.Should().Contain("<Address>123 Main St, Springfield, USA</Address>");
     }
+
+
+
+    [Fact]
+    public async Task ExportCsv_ReturnsFileResult_WhenBusinessCardExists()
+    {
+        // Arrange
+        int businessCardId = 1;
+        var businessCard = new BusinessCard
+        {
+            Id = businessCardId,
+            Name = "Test Card",
+            Email = "test@email.com",
+            Phone = "0799999999",
+            Address = "123 Main St",
+            Gender = Models.Enums.Gender.Male
+        };
+        var context = GetInMemoryDbContext();
+        context.BusinessCards.Add(businessCard);
+        await context.SaveChangesAsync();
+
+        var mockBusinessCardService = new Mock<IBusinessCardService>();
+        var mockMapper = new Mock<IMapper>();
+        var controller = new BusinesCardsController(context, mockBusinessCardService.Object, mockMapper.Object);
+
+        var csvContent = "Name,Email,Phone,DateOfBirth,Address,Gender\nTest Card,test@email.com,0799999999,,123 Main St,Male";
+        mockBusinessCardService.Setup(s => s.ConvertToCsv(It.IsAny<businessCard>()))
+            .Returns(csvContent);
+
+        // Act
+        var result = await controller.ExportCsv(businessCardId) as FileContentResult;
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal("text/csv", result.ContentType);
+        Assert.Equal($"BusinessCard_{businessCardId}.csv", result.FileDownloadName);
+
+        var expectedBytes = Encoding.UTF8.GetBytes(csvContent);
+        Assert.Equal(expectedBytes, result.FileContents);
+    }
+
+    [Fact]
+    public async Task ExportCsv_ReturnsNotFound_WhenBusinessCardDoesNotExist()
+    {
+        // Arrange
+        int businessCardId = 999; // Non-existing ID
+        var context = GetInMemoryDbContext();
+        var mockBusinessCardService = new Mock<IBusinessCardService>();
+        var mockMapper = new Mock<IMapper>();
+        var controller = new BusinesCardsController(context, mockBusinessCardService.Object, mockMapper.Object);
+
+        // Act
+        var result = await controller.ExportCsv(businessCardId);
+
+        // Assert
+        Assert.IsType<NotFoundResult>(result);
+    }
+
+    [Fact]
+    public async Task ExportCsv_ReturnsBadRequest_WhenExceptionThrown()
+    {
+        // Arrange
+        int businessCardId = 1;
+        var businessCard = new BusinessCard
+        {
+            Id = businessCardId,
+            Name = "Test Card",
+            Email = "test@email.com",
+            Phone = "0799999999",
+            Address = "123 Main St",
+            Gender = Models.Enums.Gender.Male
+        };
+        var context = GetInMemoryDbContext();
+        context.BusinessCards.Add(businessCard);
+        await context.SaveChangesAsync();
+
+        var mockBusinessCardService = new Mock<IBusinessCardService>();
+        var mockMapper = new Mock<IMapper>();
+        var controller = new BusinesCardsController(context, mockBusinessCardService.Object, mockMapper.Object);
+
+        // Setup to throw exception during CSV conversion
+        mockBusinessCardService.Setup(s => s.ConvertToCsv(It.IsAny<businessCard>()))
+            .Throws(new Exception("Error generating CSV."));
+
+        // Act
+        var result = await controller.ExportCsv(businessCardId);
+
+        // Assert
+        var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+        Assert.Equal("Error generating CSV.", badRequestResult.Value);
+    }
 }
 
