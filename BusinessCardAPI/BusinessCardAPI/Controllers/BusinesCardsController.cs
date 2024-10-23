@@ -40,6 +40,11 @@ namespace BusinessCardAPI.Controllers
                 businessCards = businessCards.Where(bc => bc.Name.Contains(searchParams.Name));
             }
 
+            if (searchParams.Gender is not null)
+            {
+                businessCards = businessCards.Where(bc => bc.Gender == searchParams.Gender);
+            }
+
             return Ok(await businessCards.ToListAsync());
         }
 

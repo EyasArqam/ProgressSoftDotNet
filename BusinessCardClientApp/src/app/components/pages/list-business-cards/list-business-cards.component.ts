@@ -3,6 +3,7 @@ import { BusinessCard } from '../../../data/models/BusinessCard';
 import { BackendService } from '../../../shared/services/backend.service';
 import { FormControl, FormGroup } from '@angular/forms';
 import { UrlHelper } from '@utils/url-helper';
+import { Gender } from 'app/shared/enums';
 
 @Component({
   selector: 'app-list-business-cards',
@@ -17,8 +18,10 @@ export class ListBusinessCardsComponent implements OnInit {
   _backend = inject(BackendService);
   IsAction = false;
   formFilter = new FormGroup({
-    Name: new FormControl('')
+    Name: new FormControl(''),
+    Gender: new FormControl(''),
   });
+  gender = Object.values(Gender)
 
   ngOnInit(): void {
     this.updateCols(window.innerWidth);

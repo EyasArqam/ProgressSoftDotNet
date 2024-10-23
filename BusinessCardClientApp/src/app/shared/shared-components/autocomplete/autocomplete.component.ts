@@ -57,6 +57,16 @@ export class AutocompleteComponent extends ControlValueAccessorConnector {
         }
       })
     );
+
+
+  }
+
+
+  handleSingleOptionSelection(event: any) {
+    if (event.isUserInput) {
+      this.onChange(event.source.value);
+      this.onTouched();
+    }
   }
 
   private _filter(options: string[], value: string): string[] {

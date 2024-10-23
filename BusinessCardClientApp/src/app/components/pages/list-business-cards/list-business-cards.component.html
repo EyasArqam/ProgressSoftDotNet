@@ -10,6 +10,8 @@
       <from [formGroup]="formFilter">
         <autocomplete [url]="'BusinesCards/ListName'" [placeholder]="'Name'" label="Filter" formControlName="Name">
         </autocomplete>
+        <autocomplete [data]="gender" [placeholder]="'Gender'" label="Filter" formControlName="Gender">
+        </autocomplete>
       </from>
 
       

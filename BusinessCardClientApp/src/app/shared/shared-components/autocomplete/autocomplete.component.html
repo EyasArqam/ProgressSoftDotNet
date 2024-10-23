@@ -8,7 +8,7 @@
     (blur)="onTouched()"
     (input)="onChange(formControl.value)">
     <mat-autocomplete #auto="matAutocomplete">
-        <mat-option *ngFor="let option of filteredOptions | async" [value]="option" (onSelectionChange)="onChange(option)">
+        <mat-option *ngFor="let option of filteredOptions | async" [value]="option" (onSelectionChange)="handleSingleOptionSelection($event);">
             {{ option }}
         </mat-option>
     </mat-autocomplete>
