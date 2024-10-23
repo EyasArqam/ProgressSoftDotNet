@@ -12,9 +12,13 @@ import { DatePipe } from '@angular/common';
   styleUrl: './list-business-cards.component.css'
 })
 export class ListBusinessCardsComponent implements OnInit {
-constructor(public datepipe: DatePipe){}
+  constructor(public datepipe: DatePipe) { }
 
   @HostListener('window:resize', ['$event'])
+  
+  onResize(event: any): void {
+    this.defaultWidth = this.calculateWidth(event.target.innerWidth);
+  }
   cols: number = 2;
   businessCards: BusinessCard[] = [];
   _backend = inject(BackendService);
@@ -27,13 +31,30 @@ constructor(public datepipe: DatePipe){}
     DOB: new FormControl(''),
   });
   gender = Object.values(Gender)
+  defaultWidth = 600;
+  defaultHeight = 340;
 
   ngOnInit(): void {
-    this.updateCols(window.innerWidth);
-
     this.loadBusinessCards();
 
+    this.defaultWidth = this.calculateWidth(window.innerWidth);
+
   }
+
+  private calculateWidth(innerWidth: number): number {
+    console.log(innerWidth);
+    
+    if (innerWidth < 1600) {
+      return 400;
+
+    } else if(innerWidth < 1200){
+      return 300;
+    }else{
+      return 600;
+    }
+
+}
+
 
   loadBusinessCards() {
     this._backend.get("BusinesCards/GetFilteredBusinessCards").then((res) => {
@@ -41,23 +62,6 @@ constructor(public datepipe: DatePipe){}
         this.businessCards = res.body;
       }
     });
-  }
-
-  onResize(event: Event) {
-    const target = event.target as Window;
-    this.updateCols(target.innerWidth);
-  }
-
-  updateCols(width: number) {
-    if (width < 650) {
-      this.cols = 1;
-    } else {
-      this.cols = 2;
-    }
-  }
-
-  getCols() {
-    return this.cols;
   }
 
 
@@ -77,26 +81,26 @@ constructor(public datepipe: DatePipe){}
     });
 
   }
-  
-  exportXml(Id: number){
+
+  exportXml(Id: number) {
     this._backend.ExportXml("BusinesCards/ExportXml", Id).then((res) => {
       if (res.ok) {
-        
+
       }
     });
 
   }
 
-  exportCsv(Id: number){
+  exportCsv(Id: number) {
     this._backend.ExportCsv("BusinesCards/ExportCsv", Id).then((res) => {
       if (res.ok) {
-        
+
       }
     });
 
   }
 
-  Search(){
+  Search() {
 
     let dob = this.formFilter.controls.DOB?.value;
     if (dob) {

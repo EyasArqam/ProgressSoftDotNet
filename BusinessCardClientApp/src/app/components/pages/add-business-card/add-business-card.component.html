@@ -16,74 +16,91 @@
 
         <divider-with-text text="OR"></divider-with-text>
 
-        <form [formGroup]="businessCardForm" class="example-form" (ngSubmit)="onSubmit()">
-            <div class="form-container">
-
-                <mat-form-field class="example-full-width">
-                    <mat-label>Name</mat-label>
-                    <input matInput formControlName="Name">
-                    @if (businessCardForm.get('Name')?.hasError('required')) {
-                    <mat-error>Name is <strong>required</strong></mat-error>
-                    }
-                </mat-form-field>
-
-                <mat-form-field class="example-full-width">
-                    <mat-label>Date of Birth</mat-label>
-                    <input matInput [matDatepicker]="picker" formControlName="DateOfBirth" placeholder="Choose a date">
-                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                    <mat-datepicker #picker></mat-datepicker>
-
-                </mat-form-field>
-
-                <mat-form-field class="example-full-width">
-                    <mat-label>Email</mat-label>
-                    <input type="email" matInput formControlName="Email" placeholder="Ex. pat@example.com">
-                    @if (businessCardForm.get('Email')?.hasError('Email') &&
-                    !businessCardForm.get('Email')?.hasError('required')) {
-                    <mat-error>Please enter a valid email address</mat-error>
-                    }
-                    @if (businessCardForm.get('Email')?.hasError('required')) {
-                    <mat-error>Email is <strong>required</strong></mat-error>
-                    }
-                </mat-form-field>
-
-                <mat-form-field class="example-full-width">
-                    <mat-label>Telephone</mat-label>
-                    <span matTextPrefix>+962 &nbsp;</span>
-                    <input type="tel" matInput formControlName="Phone" placeholder="555-555-1234">
-                    <mat-icon matSuffix>&#xe3c9;</mat-icon>
-                    @if (businessCardForm.get('Phone')?.hasError('required')) {
-                    <mat-error>Phone is <strong>required</strong></mat-error>
-                    }
-                </mat-form-field>
-
-                <mat-form-field class="example-full-width">
-                    <mat-label>Gender</mat-label>
-                    <mat-select formControlName="Gender">
-                        <mat-option *ngFor="let g of genders; let i = index" [value]="i">{{ g }}</mat-option>
-                    </mat-select>
-
-                </mat-form-field>
-
-                <mat-form-field class="example-full-width">
-                    <mat-label>Address</mat-label>
-                    <textarea maxlength="250" matInput formControlName="Address"
-                        placeholder="Enter your address"></textarea>
-                </mat-form-field>
-
-
-
-                <div>
-                    <mat-label>Photo</mat-label>
-                    <input type="file" (change)="onPhotoChange($event)" accept="image/*" />
-                </div>
-
-
-                <button mat-raised-button color="primary" [disabled]="businessCardForm.invalid">Submit</button>
-
+        <div class="container-seciotn">
+            <div class="main-form">
+                <form [formGroup]="businessCardForm" class="example-form" (ngSubmit)="onSubmit()">
+                    <div class="form-container">
+                        <mat-form-field class="example-full-width">
+                            <mat-label>Name</mat-label>
+                            <input matInput formControlName="Name">
+                            @if (businessCardForm.get('Name')?.hasError('required')) {
+                            <mat-error>Name is <strong>required</strong></mat-error>
+                            }
+                        </mat-form-field>
+                        <mat-form-field class="example-full-width">
+                            <mat-label>Date of Birth</mat-label>
+                            <input matInput [matDatepicker]="picker" formControlName="DateOfBirth"
+                                placeholder="Choose a date">
+                            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                            <mat-datepicker #picker></mat-datepicker>
+                        </mat-form-field>
+                        <mat-form-field class="example-full-width">
+                            <mat-label>Email</mat-label>
+                            <input type="email" matInput formControlName="Email" placeholder="Ex. pat@example.com">
+                            @if (businessCardForm.get('Email')?.hasError('Email') &&
+                            !businessCardForm.get('Email')?.hasError('required')) {
+                            <mat-error>Please enter a valid email address</mat-error>
+                            }
+                            @if (businessCardForm.get('Email')?.hasError('required')) {
+                            <mat-error>Email is <strong>required</strong></mat-error>
+                            }
+                        </mat-form-field>
+                        <mat-form-field class="example-full-width">
+                            <mat-label>Telephone</mat-label>
+                            <span matTextPrefix>+962 &nbsp;</span>
+                            <input type="tel" matInput formControlName="Phone" placeholder="555-555-1234">
+                            <mat-icon matSuffix>&#xe3c9;</mat-icon>
+                            @if (businessCardForm.get('Phone')?.hasError('required')) {
+                            <mat-error>Phone is <strong>required</strong></mat-error>
+                            }
+                        </mat-form-field>
+                        <mat-form-field class="example-full-width">
+                            <mat-label>Gender</mat-label>
+                            <mat-select formControlName="Gender">
+                                <mat-option *ngFor="let g of genders; let i = index" [value]="i">{{ g }}</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <mat-form-field class="example-full-width">
+                            <mat-label>Address</mat-label>
+                            <textarea maxlength="250" matInput formControlName="Address"
+                                placeholder="Enter your address"></textarea>
+                        </mat-form-field>
+                        <div>
+                            <mat-label>Photo</mat-label>
+                            <input type="file" (change)="onPhotoChange($event)" accept="image/*" />
+                        </div>
+                        <button mat-raised-button color="primary" [disabled]="businessCardForm.invalid" style="margin-top: 10px;">Submit</button>
+                    </div>
+                </form>
             </div>
-
-        </form>
+            
+            <div>
+                <div class="container" [style.width.px]="defaultWidth">
+                    <div class="card">
+                        <div class="front">
+                            <div class="logo">
+                                <img *ngIf="photoBase64; else noImageTemplate"  loading="lazy" [src]="photoBase64"
+                                    alt="Logo" />
+                                <ng-template #noImageTemplate>
+                                    <img loading="lazy" src="assets/images/noimage.png" alt="No Image Available" />
+                                </ng-template>
+                            </div>
+                        </div>
+                        <div class="back">
+                            <h1>{{ businessCardForm.controls?.['Name']?.value || 'Default Name'}}</h1>
+                            <ul>
+                                <li class="truncate" [matTooltip]="businessCardForm.controls?.['Phone']?.value || '999 999 9999'" matTooltipPosition="above">{{ businessCardForm.controls?.['Phone']?.value || '999 999 9999' }}
+                                </li>
+                                <li class="truncate" [matTooltip]="businessCardForm.controls?.['Email']?.value || 'example@gmail.com'" matTooltipPosition="above">{{ businessCardForm.controls?.['Email']?.value || 'example@gmail.com' }}
+                                </li>
+                                <li class="truncate" [matTooltip]="businessCardForm.controls?.['Address']?.value || '123 Main St, Springfield, USA'" matTooltipPosition="above">{{businessCardForm.controls?.['Address']?.value || '123 Main St, Springfield, USA'}}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
 
     </mat-card-content>

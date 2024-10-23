@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, HostListener, inject, OnInit, signal } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Gender } from '../../../shared/enums';
 import { BackendService } from '../../../shared/services/backend.service';
@@ -9,6 +9,11 @@ import { BackendService } from '../../../shared/services/backend.service';
   styleUrl: './add-business-card.component.css'
 })
 export class AddBusinessCardComponent implements OnInit {
+  
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    this.defaultWidth = this.calculateWidth(event.target.innerWidth);
+  }
 
   _backend = inject(BackendService);
   readonly panelOpenState = signal(true);
@@ -16,7 +21,9 @@ export class AddBusinessCardComponent implements OnInit {
   genders = Object.values(Gender);
   photoBase64: string | null = null;
   public selectedFiles: File[] = [];
+  defaultWidth =  600;
 
+  
   ngOnInit(): void {
     this.businessCardForm = new FormGroup({
       Name: new FormControl('', [Validators.required]),
@@ -28,8 +35,22 @@ export class AddBusinessCardComponent implements OnInit {
       Photo: new FormControl('')
     });
 
+    this.defaultWidth = this.calculateWidth(window.innerWidth);
   }
 
+
+
+  private calculateWidth(innerWidth: number): number {
+    if (innerWidth > 1200) {
+      return 600; 
+    } else if (innerWidth > 900) {
+      return Math.floor(600 * (innerWidth / 1200));
+    } else if (innerWidth > 600) {
+      return Math.floor(innerWidth * 0.5); 
+    } else {
+      return Math.floor(innerWidth * 0.8); 
+    }
+  }
 
   onFilesSelected(files: File[]): void {
     this.selectedFiles = files;
@@ -42,8 +63,6 @@ export class AddBusinessCardComponent implements OnInit {
       this.processFileByExtension(fileExtension, files);
 
     }
-
-
   }
 
   onPhotoChange(event: any) {

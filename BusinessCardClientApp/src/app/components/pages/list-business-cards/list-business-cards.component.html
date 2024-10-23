@@ -33,7 +33,7 @@
     </div>
 
 
-    <mat-grid-list [cols]="getCols()" rowHeight="2:1" gutterSize="16px">
+    <mat-grid-list cols="2" rowHeight="2:1" gutterSize="16px">
       @for (card of businessCards; track $index) {
       <mat-grid-tile>
 
@@ -45,7 +45,7 @@
             <span class="export-csv icon-pointer" (click)="exportCsv(card.id)"><span>CSV</span></span>
           </span>
 
-          <div class="container">
+          <div class="container" [style.width.px]="defaultWidth" [style.height.px]="defaultHeight">
             <div class="card">
               <div class="front">
                 <div class="logo">
