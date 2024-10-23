@@ -3,6 +3,7 @@ using BusinessCardAPI.Data;
 using BusinessCardAPI.Interfaces;
 using BusinessCardAPI.Models.DTOs;
 using BusinessCardAPI.Models.Entities;
+using BusinessCardAPI.Models.Enums;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Text;
@@ -76,7 +77,8 @@ namespace BusinessCardAPI.Controllers
 
             if (file == null || file.Length == 0)
             {
-                return BadRequest("No file uploaded.");
+                ModelState.AddModelError(((int)ErrorCode.NoFile).ToString(), "No file uploaded.");
+                return BadRequest(ModelState);
             }
 
             try
@@ -86,7 +88,8 @@ namespace BusinessCardAPI.Controllers
 
                 if (fileExtension != ".xml")
                 {
-                    return BadRequest("Unsupported file type. Please upload an XML file.");
+                    ModelState.AddModelError(((int)ErrorCode.UnsupportedFile).ToString(), "Unsupported file type. Please upload an XML file.");
+                    return BadRequest(ModelState);
                 }
 
 
@@ -124,7 +127,8 @@ namespace BusinessCardAPI.Controllers
 
             if (file == null || file.Length == 0)
             {
-                return BadRequest("No file uploaded.");
+                ModelState.AddModelError(((int)ErrorCode.NoFile).ToString(), "No file uploaded.");
+                return BadRequest(ModelState);
             }
 
             try
@@ -133,7 +137,8 @@ namespace BusinessCardAPI.Controllers
 
                 if (fileExtension != ".csv")
                 {
-                    return BadRequest("Unsupported file type. Please upload an CSV file.");
+                    ModelState.AddModelError(((int)ErrorCode.UnsupportedFile).ToString(), "Unsupported file type. Please upload an CSV file.");
+                    return BadRequest(ModelState);
                 }
 
                 List<BusinessCard> businessCards = new List<BusinessCard>();
@@ -168,9 +173,11 @@ namespace BusinessCardAPI.Controllers
         public async Task<IActionResult> PostForm([FromBody] BusinessCard formData)
         {
 
+
             if (formData == null)
             {
-                return BadRequest("Form data cannot be null.");
+                ModelState.AddModelError(((int)ErrorCode.FormIsNull).ToString(), "Form data cannot be null.");
+                return BadRequest(ModelState);
             }
 
             try
@@ -182,7 +189,7 @@ namespace BusinessCardAPI.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "An error occurred while processing the form.");
+                return StatusCode(500, "An error occurred while adding business Card.");
             }
         }
 
@@ -193,7 +200,8 @@ namespace BusinessCardAPI.Controllers
 
             if (businessCard == null)
             {
-                return NotFound();
+                ModelState.AddModelError(((int)ErrorCode.NotFound).ToString(), "No business card found with the specified ID.");
+                return NotFound(ModelState);
             }
 
             businessCard.IsDeleted = true;

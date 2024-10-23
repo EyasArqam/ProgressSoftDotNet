@@ -5,6 +5,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { UrlHelper } from '@utils/url-helper';
 import { Gender } from 'app/shared/enums';
 import { DatePipe } from '@angular/common';
+import { SnackbarService } from 'app/shared/services/snackbar.service';
 
 @Component({
   selector: 'app-list-business-cards',
@@ -13,12 +14,9 @@ import { DatePipe } from '@angular/common';
 })
 export class ListBusinessCardsComponent implements OnInit {
   constructor(public datepipe: DatePipe) { }
+  _snackbar = inject(SnackbarService);
 
-  @HostListener('window:resize', ['$event'])
-  
-  onResize(event: any): void {
-    this.defaultWidth = this.calculateWidth(event.target.innerWidth);
-  }
+
   cols: number = 2;
   businessCards: BusinessCard[] = [];
   _backend = inject(BackendService);
@@ -31,35 +29,20 @@ export class ListBusinessCardsComponent implements OnInit {
     DOB: new FormControl(''),
   });
   gender = Object.values(Gender)
-  defaultWidth = 600;
-  defaultHeight = 340;
 
   ngOnInit(): void {
     this.loadBusinessCards();
 
-    this.defaultWidth = this.calculateWidth(window.innerWidth);
 
   }
-
-  private calculateWidth(innerWidth: number): number {
-    console.log(innerWidth);
-    
-    if (innerWidth < 1600) {
-      return 400;
-
-    } else if(innerWidth < 1200){
-      return 300;
-    }else{
-      return 600;
-    }
-
-}
 
 
   loadBusinessCards() {
     this._backend.get("BusinesCards/GetFilteredBusinessCards").then((res) => {
       if (res.ok) {
         this.businessCards = res.body;
+      }else{
+        this._snackbar.show("No data available.");
       }
     });
   }
@@ -76,7 +59,10 @@ export class ListBusinessCardsComponent implements OnInit {
 
     this._backend.delete("BusinesCards/DeleteBusinessCard/" + Id).then((res) => {
       if (res?.ok) {
+        this._snackbar.show("Business card deleted successfully.");
         this.loadBusinessCards();
+      }else{
+        this._snackbar.show("Failed to delete the business card. Please try again.");
       }
     });
 
@@ -85,7 +71,9 @@ export class ListBusinessCardsComponent implements OnInit {
   exportXml(Id: number) {
     this._backend.ExportXml("BusinesCards/ExportXml", Id).then((res) => {
       if (res.ok) {
-
+        this._snackbar.show("Business card exported successfully.");
+      }else{
+        this._snackbar.show("Failed to export the business card. Please try again.");
       }
     });
 
@@ -94,7 +82,9 @@ export class ListBusinessCardsComponent implements OnInit {
   exportCsv(Id: number) {
     this._backend.ExportCsv("BusinesCards/ExportCsv", Id).then((res) => {
       if (res.ok) {
-
+        this._snackbar.show("Business card exported successfully.");
+      }else{
+        this._snackbar.show("Failed to export the business card. Please try again.");
       }
     });
 

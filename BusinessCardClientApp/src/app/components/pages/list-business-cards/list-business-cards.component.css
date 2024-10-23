@@ -92,7 +92,7 @@ mat-grid-tile {
 
 
 .container {
-    max-width: 600px;
+    width: 600px;
 
 
     height: 340px;

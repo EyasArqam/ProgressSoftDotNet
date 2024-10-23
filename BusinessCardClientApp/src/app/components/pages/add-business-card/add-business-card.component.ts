@@ -2,6 +2,7 @@ import { Component, HostListener, inject, OnInit, signal } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Gender } from '../../../shared/enums';
 import { BackendService } from '../../../shared/services/backend.service';
+import { SnackbarService } from 'app/shared/services/snackbar.service';
 
 @Component({
   selector: 'app-add-business-card',
@@ -16,6 +17,7 @@ export class AddBusinessCardComponent implements OnInit {
   }
 
   _backend = inject(BackendService);
+  _snackbar = inject(SnackbarService);
   readonly panelOpenState = signal(true);
   businessCardForm: FormGroup = new FormGroup({});
   genders = Object.values(Gender);
@@ -36,6 +38,7 @@ export class AddBusinessCardComponent implements OnInit {
     });
 
     this.defaultWidth = this.calculateWidth(window.innerWidth);
+
   }
 
 
@@ -54,6 +57,11 @@ export class AddBusinessCardComponent implements OnInit {
 
   onFilesSelected(files: File[]): void {
     this.selectedFiles = files;
+
+    if (!files.length) {
+      this._snackbar.show("Please upload at least one file.");
+      return;
+    }
 
     if (files.length == 1) {
 
@@ -89,8 +97,10 @@ export class AddBusinessCardComponent implements OnInit {
       };
   
       this._backend.post("BusinesCards/PostForm", formData).then((res) => {
-        if (res) {
-          
+        if (res.ok) {
+          this._snackbar.show("Business card has been added successfully");
+        }else{
+          this._snackbar.show("An error occurred while adding business Card.");
         }
       });
     }
@@ -115,21 +125,25 @@ export class AddBusinessCardComponent implements OnInit {
 
   postXmlFile(files: File[]): void {
     this._backend.postFiles("BusinesCards/PostXmlFile", files).then((res) => {
-      this.handleResponse(res, 'XML file processed successfully.');
+      this.handleResponse(res, 'The XML file has been processed successfully.');
     });
   }
 
   postCsvFile(files: File[]): void {
     this._backend.postFiles("BusinesCards/PostCsvFile", files).then((res) => {
-      this.handleResponse(res, 'CSV file processed successfully.');
+      this.handleResponse(res, 'The CSV file has been processed successfully.');
     });
   }
 
   handleResponse(res: any, successMessage: string): void {
     if (res.ok) {
       console.log(successMessage);
+      this._snackbar.show(successMessage);
+
     } else {
       console.error("Error processing file:", res.message);
+      this._snackbar.show(res.message);
+
     }
   }
   // #endregion

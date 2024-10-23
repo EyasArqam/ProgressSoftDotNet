@@ -26,15 +26,6 @@ export class BackendService {
   constructor(private http: HttpClient) { }
 
 
-  getAll(
-    Url: string,
-  ): Promise<any[] | undefined> {
-    return this.http
-      .get<any[]>(`${this.baseUrl}/${Url}`)
-      .pipe(catchError(this.handleError<any[]>(Url, [])))
-      .toPromise();
-  }
-
   get<T = {}>(url: string): Promise<GetResponse<T> | any> {
     return this.http
       .get<GetResponse<T>>(this.baseUrl + url)
@@ -44,149 +35,6 @@ export class BackendService {
       )
       .toPromise();
   }
-
-  getFull<T = {}>(url: string): Promise<GetResponse<T> | any> {
-    return this.http
-      .get<GetResponse<T>>(url)
-      .pipe(
-        map((res) => new GetResponse({ ok: true, body: res })),
-        catchError(this.handleError<any>(url, []))
-      )
-      .toPromise();
-  }
-
-  put(url: string, obj: { [x: string]: any; }, files?: any[]): Promise<any> {
-    let HasUploadFile = false;
-
-    if (!(obj instanceof Array)) {
-      Object.keys(obj).forEach((key) => {
-        if (
-          obj[key] &&
-          obj[key].Id &&
-          typeof obj[key] === 'object' &&
-          !(obj[key] instanceof Date) &&
-          !(obj[key] instanceof Array) &&
-          !(obj[key] instanceof File)
-        ) {
-          obj[key] = obj[key].Id;
-        }
-        if (key === 'Id' && !obj[key]) {
-          obj[key] = undefined;
-        } else if (obj[key] instanceof Date) {
-          const Offset = (new Date(obj[key]).getTimezoneOffset() * -1) / 60;
-          const date: Date = new Date(obj[key]);
-          date.setHours(date.getHours() + Number(Offset));
-          obj[key] = date;
-        }
-        if (obj[key] instanceof File) {
-          HasUploadFile = true;
-        }
-        if (files) {
-          if (obj[key] && obj[key][0] instanceof File) {
-            HasUploadFile = true;
-          }
-        }
-      });
-    }
-
-    if (HasUploadFile || files) {
-      const formdata = new FormData();
-      if (obj instanceof Array) {
-        formdata.append('data', JSON.stringify(obj));
-      } else {
-        Object.keys(obj).forEach((key) => {
-          if (!(obj[key] instanceof Array)) {
-            formdata.append(key, obj[key]);
-          } else {
-            formdata.append(key, JSON.stringify(obj[key]));
-          }
-        });
-      }
-
-      if (files) {
-        files.forEach((file, index) => {
-          formdata.append('file_' + index, file);
-        });
-      }
-      return this.http
-        .put<any>(this.baseUrl + url, formdata)
-        .pipe(
-          map((res) => new PutResponse({ ok: true, ...res })),
-          catchError(this.handleError<any>(url, []))
-        )
-        .toPromise();
-    } else {
-      return this.http
-        .put<any>(this.baseUrl + url, obj)
-        .pipe(
-          map((res) => new PutResponse({ ok: true, ...res })),
-          catchError(this.handleError<any>(url, []))
-        )
-        .toPromise();
-    }
-  }
-
-  putFormData(url: string, obj: { [x: string]: any; }, files?: any[]): Promise<any> {
-    let HasUploadFile = false;
-
-    if (!(obj instanceof Array)) {
-      Object.keys(obj).forEach((key) => {
-        if (
-          obj[key] &&
-          obj[key].Id &&
-          typeof obj[key] === 'object' &&
-          !(obj[key] instanceof Date) &&
-          !(obj[key] instanceof Array) &&
-          !(obj[key] instanceof File)
-        ) {
-          obj[key] = obj[key].Id;
-        }
-        if (key === 'Id' && !obj[key]) {
-          obj[key] = undefined;
-        } else if (obj[key] instanceof Date) {
-          const Offset = (new Date(obj[key]).getTimezoneOffset() * -1) / 60;
-          const date: Date = new Date(obj[key]);
-          date.setHours(date.getHours() + Number(Offset));
-          obj[key] = date;
-        }
-        if (obj[key] instanceof File) {
-          HasUploadFile = true;
-        }
-        if (files) {
-          if (obj[key] && obj[key][0] instanceof File) {
-            HasUploadFile = true;
-          }
-        }
-      });
-    }
-
-    const formdata = new FormData();
-    if (obj instanceof Array) {
-      formdata.append('data', JSON.stringify(obj));
-    } else {
-      Object.keys(obj).forEach((key) => {
-        if (!(obj[key] instanceof Array)) {
-          formdata.append(key, obj[key]);
-        } else {
-          formdata.append(key, JSON.stringify(obj[key]));
-        }
-      });
-    }
-
-    if (files) {
-      files.forEach((file, index) => {
-        formdata.append('file_' + index, file);
-      });
-    }
-    return this.http
-      .put<any>(this.baseUrl + url, formdata)
-      .pipe(
-        map((res) => new PutResponse({ ok: true, ...res })),
-        catchError(this.handleError<any>(url, []))
-      )
-      .toPromise();
-  }
-
 
   post<T = {}>(url: string, obj: any): Promise<PostResponse<T>> {
     return this.http
@@ -213,67 +61,6 @@ export class BackendService {
       .toPromise();
   }
 
-  postFormData<T = {}>(url: string, obj: { [x: string]: any; }, files?: any[]): Promise<PostResponse<T>> {
-    let HasUploadFile = false;
-
-    if (!(obj instanceof Array)) {
-      Object.keys(obj).forEach((key) => {
-        if (
-          obj[key] &&
-          obj[key].Id &&
-          typeof obj[key] === 'object' &&
-          !(obj[key] instanceof Date) &&
-          !(obj[key] instanceof Array) &&
-          !(obj[key] instanceof File)
-        ) {
-          obj[key] = obj[key].Id;
-        }
-        if (key === 'Id' && !obj[key]) {
-          obj[key] = undefined;
-        } else if (obj[key] instanceof Date) {
-          const Offset = (new Date(obj[key]).getTimezoneOffset() * -1) / 60;
-          const date: Date = new Date(obj[key]);
-          date.setHours(date.getHours() + Number(Offset));
-          obj[key] = date;
-        }
-        if (obj[key] instanceof File) {
-          HasUploadFile = true;
-        }
-        if (files) {
-          if (obj[key] && obj[key][0] instanceof File) {
-            HasUploadFile = true;
-          }
-        }
-      });
-    }
-
-    const formdata = new FormData();
-    if (obj instanceof Array) {
-      formdata.append('data', JSON.stringify(obj));
-    } else {
-      Object.keys(obj).forEach((key) => {
-        if (!(obj[key] instanceof Array)) {
-          formdata.append(key, obj[key]);
-        } else {
-          formdata.append(key, JSON.stringify(obj[key]));
-        }
-      });
-    }
-
-    if (files) {
-      files.forEach((file, index) => {
-        formdata.append('file_' + index, file);
-      });
-    }
-
-    return this.http
-      .post<any>(this.baseUrl + url, formdata)
-      .pipe(
-        map((res) => new PostResponse({ ok: true, body: res })),
-        catchError(this.handleError<any>(url, []))
-      )
-      .toPromise();
-  }
 
   delete(url: string): Promise<DeleteResponse | any> {
     return this.http
@@ -407,6 +194,9 @@ export class BackendService {
         this.log(error);
         return of(error as unknown as T);
       }
+
+
+      
 
       return of(result as T);
     };
