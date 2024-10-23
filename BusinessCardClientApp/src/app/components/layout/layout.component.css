@@ -53,3 +53,10 @@ h1.example-app-name {
 .mat-icon {
   margin-right: 0px !important;
 }
+
+
+.loder-container{
+  position: fixed;
+  width: 100%;
+  z-index: 99;
+}
