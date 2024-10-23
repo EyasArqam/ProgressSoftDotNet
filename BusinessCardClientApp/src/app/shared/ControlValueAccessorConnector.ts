@@ -1,4 +1,4 @@
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Directive, Input, forwardRef } from '@angular/core';
 
 @Directive({
@@ -15,14 +15,15 @@ export class ControlValueAccessorConnector implements ControlValueAccessor {
     @Input() value: any;
     onChange = (value: any) => { };
     onTouched = () => { };
+    formControl: FormControl = new FormControl();
+
 
     writeValue(value: any): void {
-        this.value = value;
-        this.onChange(this.value);
+        this.formControl.setValue(value);
     }
 
     registerOnChange(fn: any): void {
-        this.onChange = fn;
+        this.formControl.valueChanges.subscribe(fn);
     }
 
     registerOnTouched(fn: any): void {

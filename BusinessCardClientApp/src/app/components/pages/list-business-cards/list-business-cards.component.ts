@@ -4,6 +4,7 @@ import { BackendService } from '../../../shared/services/backend.service';
 import { FormControl, FormGroup } from '@angular/forms';
 import { UrlHelper } from '@utils/url-helper';
 import { Gender } from 'app/shared/enums';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-list-business-cards',
@@ -11,6 +12,7 @@ import { Gender } from 'app/shared/enums';
   styleUrl: './list-business-cards.component.css'
 })
 export class ListBusinessCardsComponent implements OnInit {
+constructor(public datepipe: DatePipe){}
 
   @HostListener('window:resize', ['$event'])
   cols: number = 2;
@@ -22,6 +24,7 @@ export class ListBusinessCardsComponent implements OnInit {
     Gender: new FormControl(''),
     Email: new FormControl(''),
     Phone: new FormControl(''),
+    DOB: new FormControl(''),
   });
   gender = Object.values(Gender)
 
@@ -94,6 +97,14 @@ export class ListBusinessCardsComponent implements OnInit {
   }
 
   Search(){
+
+    let dob = this.formFilter.controls.DOB?.value;
+    if (dob) {
+      var dateTransformed = this.datepipe.transform(dob, 'MM/dd/YYYY');
+      this.formFilter.controls.DOB.patchValue(dateTransformed);
+    }
+
+
     var paramsURL = UrlHelper.toUrlwithParams(
       "BusinesCards/GetFilteredBusinessCards",
       this.formFilter.value

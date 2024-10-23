@@ -4,6 +4,7 @@ using BusinessCardAPI.Data;
 using BusinessCardAPI.Interfaces;
 using BusinessCardAPI.Models.DTOs;
 using BusinessCardAPI.Models.Entities;
+using BusinessCardAPI.Models.Enums;
 using BusinessCardAPI.Services;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
@@ -35,9 +36,14 @@ public class BusinessCardsControllerTests
         var businessCardServiceMock = new Mock<IBusinessCardService>();
         var mapperServiceMock = new Mock<IMapper>();
         var controller = new BusinesCardsController(context, businessCardServiceMock.Object, mapperServiceMock.Object);
+        var searchParams = new Search
+        {
+            Name = "John",
+            Gender = Gender.Male
+        };
 
         // Act
-        var result = await controller.GetAll();
+        var result = await controller.GetFilteredBusinessCards(searchParams);
 
         // Assert
         result.Should().BeOfType<NoContentResult>();
@@ -56,9 +62,14 @@ public class BusinessCardsControllerTests
         await context.SaveChangesAsync();
 
         var controller = new BusinesCardsController(context, businessCardServiceMock.Object, mapperServiceMock.Object);
+        var searchParams = new Search
+        {
+            Name = "John",
+            Gender = Gender.Male
+        };
 
         // Act
-        var result = await controller.GetAll();
+        var result = await controller.GetFilteredBusinessCards(searchParams);
 
         // Assert
         result.Should().BeOfType<OkObjectResult>();

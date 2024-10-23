@@ -8,6 +8,13 @@
     gap: 20px;
 }
 
+.search-form{
+    margin: auto;
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
 .action-button {
     margin: 7px;
 }

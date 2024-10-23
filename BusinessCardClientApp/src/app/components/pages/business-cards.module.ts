@@ -9,7 +9,8 @@ import { FileUploadModule } from '@iplab/ngx-file-upload';
 import { ImportFileComponent } from "../../shared/shared-components/import-file/import-file.component";
 import {MatGridListModule} from '@angular/material/grid-list';
 import { AutocompleteComponent } from "../../shared/shared-components/autocomplete/autocomplete.component";
-
+import { DatepickerComponent } from "../../shared/shared-components/datepicker/datepicker.component";
+import {DatePipe} from '@angular/common';    
 
 
 @NgModule({
@@ -26,9 +27,11 @@ import { AutocompleteComponent } from "../../shared/shared-components/autocomple
     ImportFileComponent,
     MatGridListModule,
     AutocompleteComponent,
+    DatepickerComponent
 ],
 exports:[
   FileUploadModule
-]
+],
+providers:[DatePipe]
 })
 export class BusinessCardsModule { }

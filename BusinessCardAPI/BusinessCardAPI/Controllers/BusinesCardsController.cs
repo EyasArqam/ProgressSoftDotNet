@@ -55,6 +55,18 @@ namespace BusinessCardAPI.Controllers
                 businessCards = businessCards.Where(bc => bc.Phone == searchParams.Phone);
             }
 
+            if (searchParams.DOB.HasValue)
+            {
+                var date = searchParams.DOB.Value.Date;
+  
+                businessCards = businessCards.Where(bc =>
+                                bc.DateOfBirth.HasValue &&
+                                bc.DateOfBirth.Value.Year == date.Year &&
+                                bc.DateOfBirth.Value.Month == date.Month &&
+                                bc.DateOfBirth.Value.Day == date.Day
+                            );
+            }
+
             return Ok(await businessCards.ToListAsync());
         }
 

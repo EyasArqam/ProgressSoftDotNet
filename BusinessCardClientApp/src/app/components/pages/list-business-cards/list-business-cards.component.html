@@ -7,24 +7,31 @@
         Action
       </button>
 
-      <from [formGroup]="formFilter">
+      <from [formGroup]="formFilter" class="search-form">
         <autocomplete [url]="'BusinesCards/ListName'" [placeholder]="'Name'" label="Filter" formControlName="Name">
         </autocomplete>
+
         <autocomplete [url]="'BusinesCards/ListEmail'" [placeholder]="'Email'" label="Filter" formControlName="Email">
         </autocomplete>
+
         <autocomplete [url]="'BusinesCards/ListPhone'" [placeholder]="'Phone'" label="Filter" formControlName="Phone">
         </autocomplete>
+
+        <datepicker formControlName="DOB"></datepicker>
+
         <autocomplete [data]="gender" [placeholder]="'Gender'" label="Filter" formControlName="Gender">
         </autocomplete>
+
+        <button mat-fab extended color="primary" class="search-button" (click)="Search()">
+          <mat-icon>&#xe8b6;</mat-icon>
+          Search
+        </button>
+    
       </from>
 
       
     </div>
 
-    <button mat-fab extended color="primary" class="search-button" (click)="Search()">
-      <mat-icon>&#xe5d4;</mat-icon>
-      Search
-    </button>
 
     <mat-grid-list [cols]="getCols()" rowHeight="2:1" gutterSize="16px">
       @for (card of businessCards; track $index) {

@@ -36,7 +36,6 @@ export class AutocompleteComponent extends ControlValueAccessorConnector {
   @Input() url: string = '';
   @Input() placeholder: string = '';
   filteredOptions!: Observable<any[]>;
-  formControl = new FormControl('');
 
   constructor(private backendService: BackendService) {
     super();
