@@ -2,6 +2,7 @@ import { Component, HostListener, inject, OnInit } from '@angular/core';
 import { BusinessCard } from '../../../data/models/BusinessCard';
 import { BackendService } from '../../../shared/services/backend.service';
 import { FormControl, FormGroup } from '@angular/forms';
+import { UrlHelper } from '@utils/url-helper';
 
 @Component({
   selector: 'app-list-business-cards',
@@ -11,7 +12,6 @@ import { FormControl, FormGroup } from '@angular/forms';
 export class ListBusinessCardsComponent implements OnInit {
 
   @HostListener('window:resize', ['$event'])
-  logoBase64: string = "";
   cols: number = 2;
   businessCards: BusinessCard[] = [];
   _backend = inject(BackendService);
@@ -28,7 +28,7 @@ export class ListBusinessCardsComponent implements OnInit {
   }
 
   loadBusinessCards() {
-    this._backend.get("BusinesCards/GetAllBusinessCards").then((res) => {
+    this._backend.get("BusinesCards/GetFilteredBusinessCards").then((res) => {
       if (res.ok) {
         this.businessCards = res.body;
       }
@@ -86,6 +86,19 @@ export class ListBusinessCardsComponent implements OnInit {
       }
     });
 
+  }
+
+  Search(){
+    var paramsURL = UrlHelper.toUrlwithParams(
+      "BusinesCards/GetFilteredBusinessCards",
+      this.formFilter.value
+    );
+
+    this._backend.get(paramsURL).then((res) => {
+      if (res.ok) {
+        this.businessCards = res.body;
+      }
+    });
   }
 
 }

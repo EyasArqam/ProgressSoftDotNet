@@ -25,17 +25,22 @@ namespace BusinessCardAPI.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("GetAllBusinessCards")]
-        public async Task<IActionResult> GetAll()
+        [HttpGet("GetFilteredBusinessCards")]
+        public async Task<IActionResult> GetFilteredBusinessCards([FromQuery] Search? searchParams)
         {
-            var businessCards = _context.BusinessCards.AsNoTracking().Where(x => !x.IsDeleted).ToList();
+            var businessCards = _context.BusinessCards.AsNoTracking().Where(x => !x.IsDeleted);
 
             if (!businessCards.Any())
             {
                 return NoContent();
             }
 
-            return Ok(businessCards);
+            if (!string.IsNullOrWhiteSpace(searchParams.Name))
+            {
+                businessCards = businessCards.Where(bc => bc.Name.Contains(searchParams.Name));
+            }
+
+            return Ok(await businessCards.ToListAsync());
         }
 
         [HttpPost("PostXmlFile")]

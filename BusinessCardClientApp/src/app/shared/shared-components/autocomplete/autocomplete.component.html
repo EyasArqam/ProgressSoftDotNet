@@ -6,9 +6,9 @@
     [formControl]="formControl" 
     [matAutocomplete]="auto" 
     (blur)="onTouched()"
-    (input)="onChange($event.target)">
+    (input)="onChange(formControl.value)">
     <mat-autocomplete #auto="matAutocomplete">
-        <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+        <mat-option *ngFor="let option of filteredOptions | async" [value]="option" (onSelectionChange)="onChange(option)">
             {{ option }}
         </mat-option>
     </mat-autocomplete>

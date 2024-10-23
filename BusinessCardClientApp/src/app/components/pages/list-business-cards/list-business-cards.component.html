@@ -12,7 +12,13 @@
         </autocomplete>
       </from>
 
+      
     </div>
+
+    <button mat-fab extended color="primary" class="search-button" (click)="Search()">
+      <mat-icon>&#xe5d4;</mat-icon>
+      Search
+    </button>
 
     <mat-grid-list [cols]="getCols()" rowHeight="2:1" gutterSize="16px">
       @for (card of businessCards; track $index) {

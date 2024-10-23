@@ -1,10 +1,10 @@
-import {Component, forwardRef, Input, OnInit} from '@angular/core';
-import {FormControl, FormsModule, NG_VALUE_ACCESSOR, ReactiveFormsModule} from '@angular/forms';
-import {Observable, of} from 'rxjs';
-import {debounceTime, distinctUntilChanged, map, startWith, switchMap} from 'rxjs/operators';
-import {AsyncPipe, CommonModule} from '@angular/common';
-import {MatInputModule} from '@angular/material/input';
-import {MatFormFieldModule} from '@angular/material/form-field';
+import { Component, forwardRef, Input } from '@angular/core';
+import { FormControl, FormsModule, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
+import { Observable, of } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map, startWith, switchMap } from 'rxjs/operators';
+import { AsyncPipe, CommonModule } from '@angular/common';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { ControlValueAccessorConnector } from '../../ControlValueAccessorConnector';
 import { BackendService } from '../../services/backend.service';
@@ -45,7 +45,7 @@ export class AutocompleteComponent extends ControlValueAccessorConnector {
   ngOnInit() {
     this.filteredOptions = this.formControl.valueChanges.pipe(
       startWith(''),
-      debounceTime(300),
+      debounceTime(400),
       distinctUntilChanged(),
       switchMap(value => {
         if (this.url) {
@@ -61,6 +61,6 @@ export class AutocompleteComponent extends ControlValueAccessorConnector {
 
   private _filter(options: string[], value: string): string[] {
     const filterValue = value.toLowerCase();
-    return options.filter(option => option.toLowerCase().includes(filterValue));
+    return options?.filter(option => option.toLowerCase().includes(filterValue));
   }
 }
