@@ -20,6 +20,8 @@ export class ListBusinessCardsComponent implements OnInit {
   formFilter = new FormGroup({
     Name: new FormControl(''),
     Gender: new FormControl(''),
+    Email: new FormControl(''),
+    Phone: new FormControl(''),
   });
   gender = Object.values(Gender)
 

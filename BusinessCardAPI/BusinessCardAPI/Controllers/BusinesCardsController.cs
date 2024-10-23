@@ -45,6 +45,16 @@ namespace BusinessCardAPI.Controllers
                 businessCards = businessCards.Where(bc => bc.Gender == searchParams.Gender);
             }
 
+            if (!string.IsNullOrWhiteSpace(searchParams.Email))
+            {
+                businessCards = businessCards.Where(bc => bc.Email == searchParams.Email);
+            }
+
+            if (!string.IsNullOrWhiteSpace(searchParams.Phone))
+            {
+                businessCards = businessCards.Where(bc => bc.Phone == searchParams.Phone);
+            }
+
             return Ok(await businessCards.ToListAsync());
         }
 
@@ -250,6 +260,46 @@ namespace BusinessCardAPI.Controllers
             }
 
             var businessCards = await businessCardsQuery.Select(bc => bc.Name).ToListAsync();
+
+            if (businessCards.Count == 0)
+            {
+                return NoContent();
+            }
+
+            return Ok(businessCards);
+        }
+
+        [HttpGet("ListPhone")]
+        public async Task<IActionResult> GetListOfPhone([FromQuery] string? searchTerm)
+        {
+            var businessCardsQuery = _context.BusinessCards.AsNoTracking().Where(bc => !bc.IsDeleted);
+
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                businessCardsQuery = businessCardsQuery.Where(bc => bc.Phone == searchTerm);
+            }
+
+            var businessCards = await businessCardsQuery.Select(bc => bc.Phone).ToListAsync();
+
+            if (businessCards.Count == 0)
+            {
+                return NoContent();
+            }
+
+            return Ok(businessCards);
+        }
+
+        [HttpGet("ListEmail")]
+        public async Task<IActionResult> GetListOfEmail([FromQuery] string? searchTerm)
+        {
+            var businessCardsQuery = _context.BusinessCards.AsNoTracking().Where(bc => !bc.IsDeleted);
+
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                businessCardsQuery = businessCardsQuery.Where(bc => bc.Email == searchTerm);
+            }
+
+            var businessCards = await businessCardsQuery.Select(bc => bc.Email).ToListAsync();
 
             if (businessCards.Count == 0)
             {
