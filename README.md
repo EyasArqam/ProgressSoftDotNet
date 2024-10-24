@@ -78,9 +78,8 @@
 
 ### 5. Configure the Database Connection
 -restore the database from a dump file,
-you can download it here 
-https://drive.google.com/file/d/139y3zsAhyavAsWNLBwfPePe9L29kFpwX/view
-
+you can 
+[Download it here](https://drive.google.com/file/d/139y3zsAhyavAsWNLBwfPePe9L29kFpwX/view)
 - Once the restore process is complete, the next step is Configuration the ConnectionString.
 
 
@@ -103,6 +102,13 @@ ensure match your database server, database name, user ID, and password.
 
 -There are two ways to create a business card in the application:
 - **Import**: You can import business card data from a file, which allows for bulk creation of cards based on pre-existing information.
+
+### Sample Files for Testing
+
+You can use the following sample files to test the "Import" functionality:
+
+- [Download sample files](https://drive.google.com/drive/folders/1H5aDepNm_wl3Jfsi9CNX2ufq4ic_iyKh?usp=sharing)
+
 
 -To import business cards using XML or CSV, the file should follow these structure:
 
@@ -170,5 +176,21 @@ The "View All Business Cards" page displays a list of all created business cards
      - **Export to CSV**: Export the selected business cards to a CSV file.
 
 
+---------------
+
+
+## Known Issues and Future Improvements
+
+### 1. Handling Errors on the Frontend
+- **Current Status**: Error handling in the frontend is not fully integrated with the backend responses.
+
+### 2. Testing Section
+- **Current Status**: Although there is a test project (`BusinessCardAPI.Tests`), the test coverage is not comprehensive, particularly for edge cases and integration testing.
+- **Plan**: I plan to extend the test coverage by writing more unit tests and integration tests to ensure stability and catch potential bugs.
+
+### 3. Responsive Website Design
+- **Current Status**: The website is not fully responsive yet. The current design works well on desktop devices but may not display properly on mobile or tablet screens.
+
+---
 
 
